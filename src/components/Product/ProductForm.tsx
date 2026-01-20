@@ -17,7 +17,6 @@ const ProductForm: React.FC<Props> = ({ open, onCancel, onSubmit }) => {
       onCancel={onCancel}
       onOk={() => form.submit()}
       okText="Thêm"
-      destroyOnClose
     >
       <Form
         form={form}

@@ -5,15 +5,25 @@ import { formatMoney } from '@/utils/format';
 
 interface Props {
   data: IProduct[];
+  page: number;
+  onPageChange: (p: number) => void;
   onDelete: (id: number) => void;
 }
 
-const ProductTable: React.FC<Props> = ({ data, onDelete }) => {
+const PAGE_SIZE = 10;
+
+const ProductTable: React.FC<Props> = ({
+  data,
+  page,
+  onPageChange,
+  onDelete,
+}) => {
   const columns: ColumnsType<IProduct> = [
     {
       title: 'STT',
       width: 70,
-      render: (_, __, index) => index + 1,
+      render: (_, __, index) =>
+        (page - 1) * PAGE_SIZE + index + 1,
     },
     {
       title: 'Tên sản phẩm',
@@ -38,9 +48,7 @@ const ProductTable: React.FC<Props> = ({ data, onDelete }) => {
           title="Xóa sản phẩm?"
           onConfirm={() => onDelete(record.id)}
         >
-          <Button danger size="small">
-            Xóa
-          </Button>
+          <Button danger size="small">Xóa</Button>
         </Popconfirm>
       ),
     },
@@ -51,7 +59,11 @@ const ProductTable: React.FC<Props> = ({ data, onDelete }) => {
       rowKey="id"
       columns={columns}
       dataSource={data}
-      pagination={{ pageSize: 5 }}
+      pagination={{
+        current: page,
+        pageSize: PAGE_SIZE,
+        onChange: onPageChange,
+      }}
     />
   );
 };

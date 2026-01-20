@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Button, Input, Space, message } from 'antd';
-import { PageContainer } from '@ant-design/pro-components';
 import ProductTable from '@/components/Product/ProductTable';
 import ProductForm from '@/components/Product/ProductForm';
 import { IProduct } from '@/services/Product/typing';
+
+const PAGE_SIZE = 10;
 
 const INIT_DATA: IProduct[] = [
   { id: 1, name: 'Laptop Dell XPS 13', price: 25000000, quantity: 10 },
@@ -17,15 +18,26 @@ export default function ProductPage() {
   const [data, setData] = useState<IProduct[]>(INIT_DATA);
   const [open, setOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const [page, setPage] = useState(1);
 
   const handleAdd = (item: Omit<IProduct, 'id'>) => {
-    setData([...data, { id: Date.now(), ...item }]);
+    setData(prev => {
+      const newData = [...prev, { id: Date.now(), ...item }];
+
+      // nếu vượt 10 sản phẩm → sang trang mới
+      if (newData.length > PAGE_SIZE) {
+        setPage(Math.ceil(newData.length / PAGE_SIZE));
+      }
+
+      return newData;
+    });
+
     message.success('Thêm sản phẩm thành công');
     setOpen(false);
   };
 
   const handleDelete = (id: number) => {
-    setData(data.filter(p => p.id !== id));
+    setData(prev => prev.filter(p => p.id !== id));
     message.success('Xóa sản phẩm thành công');
   };
 
@@ -34,12 +46,15 @@ export default function ProductPage() {
   );
 
   return (
-    <PageContainer title="Quản lý sản phẩm">
+    <>
       <Space style={{ marginBottom: 16 }}>
         <Input.Search
           placeholder="Tìm theo tên sản phẩm"
           allowClear
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={(e) => {
+            setKeyword(e.target.value);
+            setPage(1); // search thì quay về trang 1
+          }}
           style={{ width: 300 }}
         />
         <Button type="primary" onClick={() => setOpen(true)}>
@@ -47,13 +62,18 @@ export default function ProductPage() {
         </Button>
       </Space>
 
-      <ProductTable data={filteredData} onDelete={handleDelete} />
+      <ProductTable
+        data={filteredData}
+        page={page}
+        onPageChange={setPage}
+        onDelete={handleDelete}
+      />
 
       <ProductForm
         open={open}
         onCancel={() => setOpen(false)}
         onSubmit={handleAdd}
       />
-    </PageContainer>
+    </>
   );
 }
