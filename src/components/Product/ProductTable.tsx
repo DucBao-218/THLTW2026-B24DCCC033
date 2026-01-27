@@ -1,4 +1,4 @@
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Button, Popconfirm, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { IProduct } from '@/services/Product/typing';
 import { formatMoney } from '@/utils/format';
@@ -8,6 +8,7 @@ interface Props {
   page: number;
   onPageChange: (p: number) => void;
   onDelete: (id: number) => void;
+  onEdit: (record: IProduct) => void;
 }
 
 const PAGE_SIZE = 10;
@@ -17,13 +18,13 @@ const ProductTable: React.FC<Props> = ({
   page,
   onPageChange,
   onDelete,
+  onEdit,
 }) => {
   const columns: ColumnsType<IProduct> = [
     {
       title: 'STT',
       width: 70,
-      render: (_, __, index) =>
-        (page - 1) * PAGE_SIZE + index + 1,
+      render: (_, __, index) => (page - 1) * PAGE_SIZE + index + 1,
     },
     {
       title: 'Tên sản phẩm',
@@ -44,12 +45,17 @@ const ProductTable: React.FC<Props> = ({
       title: 'Thao tác',
       align: 'center',
       render: (_, record) => (
-        <Popconfirm
-          title="Xóa sản phẩm?"
-          onConfirm={() => onDelete(record.id)}
-        >
-          <Button danger size="small">Xóa</Button>
-        </Popconfirm>
+        <Space>
+          <Button size="small" onClick={() => onEdit(record)}>
+            Sửa
+          </Button>
+          <Popconfirm
+            title="Xóa sản phẩm?"
+            onConfirm={() => onDelete(record.id)}
+          >
+            <Button danger size="small">Xóa</Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
