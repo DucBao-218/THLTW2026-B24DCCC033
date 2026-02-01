@@ -23,14 +23,13 @@ const ProductTable: React.FC<Props> = ({
   onDelete,
   onEdit,
 }) => {
-  // Hàm hiển thị trạng thái bằng Tag màu
+
   const getStatusTag = (quantity: number) => {
     if (quantity === 0) return <Tag color="red">Hết hàng</Tag>;
     if (quantity <= 10) return <Tag color="orange">Sắp hết</Tag>;
     return <Tag color="green">Còn hàng</Tag>;
   };
 
-  // Định nghĩa các cột
   const columns: ColumnsType<IProduct> = useMemo(
     () => [
       {

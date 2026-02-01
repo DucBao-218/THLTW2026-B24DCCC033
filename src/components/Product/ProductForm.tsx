@@ -45,7 +45,6 @@ const ProductForm: React.FC<Props> = ({
           form.resetFields();
         }}
       >
-        {/* Tên sản phẩm */}
         <Form.Item
           label="Tên sản phẩm"
           name="name"
@@ -54,7 +53,6 @@ const ProductForm: React.FC<Props> = ({
           <Input />
         </Form.Item>
 
-        {/* Danh mục */}
         <Form.Item
           label="Danh mục"
           name="category"
@@ -71,7 +69,6 @@ const ProductForm: React.FC<Props> = ({
           />
         </Form.Item>
 
-        {/* Giá */}
         <Form.Item
           label="Giá"
           name="price"
@@ -95,7 +92,6 @@ const ProductForm: React.FC<Props> = ({
           />
         </Form.Item>
 
-        {/* Số lượng tồn kho */}
         <Form.Item
           label="Số lượng tồn kho"
           name="quantity"
