@@ -1,4 +1,6 @@
-﻿export default [
+﻿import path from "path";
+
+export default [
     {
         path: '/user',
         layout: false,
@@ -55,6 +57,18 @@
 		icon: 'BarChartOutlined',
 		component: './Dashboard',
 	},
+    {
+        path: '/game',
+        name: 'Trò chơi',
+        icon: 'RocketOutlined',
+        component: './Game',
+    },
+    {
+        path: '/study',
+        name: 'Học tập',
+        icon: 'BookOutlined',
+        component: './Study',
+    },
 
     // DANH MUC HE THONG
     // {
