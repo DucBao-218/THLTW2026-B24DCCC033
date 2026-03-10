@@ -23,7 +23,6 @@ const MENU_ITEMS = [
   { key: 'deThi',        icon: <FileTextOutlined />,       label: 'Đề thi'            },
 ];
 
-// ── helpers localStorage ──────────────────────────────────────────────────────
 function loadLS<T>(key: string, fallback: T): T {
   try {
     const item = localStorage.getItem(key);
@@ -34,7 +33,6 @@ function saveLS<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-// ── Component chính ───────────────────────────────────────────────────────────
 const QuestionBank: React.FC = () => {
   const [page, setPage] = useState<PageKey>('khoiKienThuc');
 
@@ -49,7 +47,6 @@ const QuestionBank: React.FC = () => {
   const [mauDeThis, setMauDeThis] = useState<MauDeThi[]>(() => loadLS('qb_mauDeThis', []));
   const [deThis,    setDeThis]    = useState<DeThi[]>   (() => loadLS('qb_deThis',    []));
 
-  // ── Khối kiến thức ──────────────────────────────────────────────────────────
   const themKhoiKienThuc = (data: Omit<KhoiKienThuc, 'id'>) => {
     const next = [...khoiKienThucs, { ...data, id: uuidv4() }];
     setKhoiKienThucs(next); saveLS('qb_khoiKienThucs', next);
@@ -63,7 +60,6 @@ const QuestionBank: React.FC = () => {
     setKhoiKienThucs(next); saveLS('qb_khoiKienThucs', next);
   };
 
-  // ── Môn học ─────────────────────────────────────────────────────────────────
   const themMonHoc = (data: Omit<MonHoc, 'id'>) => {
     const next = [...monHocs, { ...data, id: uuidv4() }];
     setMonHocs(next); saveLS('qb_monHocs', next);
@@ -77,7 +73,6 @@ const QuestionBank: React.FC = () => {
     setMonHocs(next); saveLS('qb_monHocs', next);
   };
 
-  // ── Câu hỏi ─────────────────────────────────────────────────────────────────
   const themCauHoi = (data: Omit<CauHoi, 'id' | 'maCauHoi' | 'ngayTao'>) => {
     const maCauHoi = `CH${String(cauHois.length + 1).padStart(4, '0')}`;
     const next = [...cauHois, { ...data, id: uuidv4(), maCauHoi, ngayTao: new Date().toISOString() }];
@@ -92,7 +87,6 @@ const QuestionBank: React.FC = () => {
     setCauHois(next); saveLS('qb_cauHois', next);
   };
 
-  // ── Mẫu đề thi ──────────────────────────────────────────────────────────────
   const themMauDeThi = (data: Omit<MauDeThi, 'id' | 'ngayTao'>) => {
     const next = [...mauDeThis, { ...data, id: uuidv4(), ngayTao: new Date().toISOString() }];
     setMauDeThis(next); saveLS('qb_mauDeThis', next);
@@ -106,7 +100,6 @@ const QuestionBank: React.FC = () => {
     setMauDeThis(next); saveLS('qb_mauDeThis', next);
   };
 
-  // ── Đề thi ──────────────────────────────────────────────────────────────────
   const themDeThi = (data: Omit<DeThi, 'id' | 'ngayTao'>) => {
     const next = [...deThis, { ...data, id: uuidv4(), ngayTao: new Date().toISOString() }];
     setDeThis(next); saveLS('qb_deThis', next);
@@ -116,7 +109,6 @@ const QuestionBank: React.FC = () => {
     setDeThis(next); saveLS('qb_deThis', next);
   };
 
-  // ── Props chung ──────────────────────────────────────────────────────────────
   const sharedProps = { khoiKienThucs, monHocs, cauHois, mauDeThis, deThis };
 
   const renderPage = () => {

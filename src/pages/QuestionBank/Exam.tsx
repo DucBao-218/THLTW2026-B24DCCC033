@@ -33,7 +33,6 @@ interface Props {
   onXoaMau:    (id: string) => void;
 }
 
-// ── Modal tạo đề ───────────────────────────────────────────────────────────────
 interface TaoDeProps extends Props { onClose: () => void; }
 
 const TaoDeThiModal: React.FC<TaoDeProps> = ({
@@ -193,7 +192,6 @@ const TaoDeThiModal: React.FC<TaoDeProps> = ({
   );
 };
 
-// ── Trang chính ────────────────────────────────────────────────────────────────
 const Exam: React.FC<Props> = (props) => {
   const { deThis, cauHois, monHocs, khoiKienThucs, mauDeThis, onXoaDeThi, onXoaMau } = props;
   const [modalOpen, setModalOpen] = useState(false);
