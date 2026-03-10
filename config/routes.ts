@@ -69,6 +69,12 @@ export default [
         icon: 'BookOutlined',
         component: './Study',
     },
+    {
+        path: '/game-oan-tu-ti',
+        name: 'Oẳn tù tì',
+        icon: 'TrophyOutlined',
+        component: './OanTuTi',
+    },
 
     // DANH MUC HE THONG
     // {

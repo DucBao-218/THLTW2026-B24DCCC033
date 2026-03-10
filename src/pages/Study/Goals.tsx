@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, InputNumber, Progress, Row, Col, Typography } from 'antd';
 import dayjs from 'dayjs';
 
@@ -16,24 +16,14 @@ interface StudySession {
   duration: number;
 }
 
-const Goals: React.FC = () => {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [sessions, setSessions] = useState<StudySession[]>([]);
-  const [goals, setGoals] = useState<Record<number, number>>({});
+interface Props {
+  subjects: Subject[];
+  sessions: StudySession[];
+  goals: Record<number, number>;
+  setGoals: React.Dispatch<React.SetStateAction<Record<number, number>>>;
+}
 
-  useEffect(() => {
-    const s = localStorage.getItem('subjects');
-    const l = localStorage.getItem('sessions');
-    const g = localStorage.getItem('goals');
-    if (s) setSubjects(JSON.parse(s));
-    if (l) setSessions(JSON.parse(l));
-    if (g) setGoals(JSON.parse(g));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('goals', JSON.stringify(goals));
-  }, [goals]);
-
+const Goals: React.FC<Props> = ({ subjects, sessions, goals, setGoals }) => {
   const getTotalHours = (subjectId: number) => {
     return sessions
       .filter(
