@@ -75,6 +75,12 @@ export default [
         icon: 'TrophyOutlined',
         component: './OanTuTi',
     },
+    {
+        path: '/questionBank',
+        name: 'Ngân hàng câu hỏi',
+        icon: 'QuestionCircleOutlined',
+        component: './QuestionBank',
+    },
 
     // DANH MUC HE THONG
     // {
