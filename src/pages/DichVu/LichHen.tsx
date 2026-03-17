@@ -5,21 +5,21 @@ import {
   Modal,
   Form,
   Select,
-  InputNumber,
   DatePicker,
   message,
   Rate,
   Input,
+  TimePicker,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { Dayjs } from 'dayjs';
-import { AppContext, IAppointment } from './_layout';
+import { AppContext, IAppointment, IReview } from './_layout';
 
 type AppointmentForm = {
   employeeId: number;
   serviceId: number;
   date: Dayjs;
-  start: number;
+  time: Dayjs;
 };
 
 type ReviewForm = {
@@ -31,7 +31,14 @@ export default () => {
   const context = useContext(AppContext);
   if (!context) return null;
 
-  const { employees, services, appointments, saveAppointments } = context;
+  const {
+    employees,
+    services,
+    appointments,
+    reviews,
+    saveAppointments,
+    saveReviews,
+  } = context;
 
   const [open, setOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -40,24 +47,42 @@ export default () => {
   const [form] = Form.useForm<AppointmentForm>();
   const [reviewForm] = Form.useForm<ReviewForm>();
 
-  // 🔥 check trùng lịch
-  const checkTrung = (empId: number, date: string, start: number, end: number) => {
-    return appointments.some(
-      a =>
-        a.employeeId === empId &&
-        a.date === date &&
-        !(end <= a.start || start >= a.end)
-    );
+  const timeToNumber = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    return h + m / 60;
   };
 
-  // 🔥 check ngày làm
-  const checkWorkingDay = (empId: number, date: Dayjs) => {
+  const checkTrung = (empId: number, date: string, start: string, end: string) => {
+    const s = timeToNumber(start);
+    const e = timeToNumber(end);
+
+    return appointments.some(a => {
+      if (a.employeeId !== empId || a.date !== date) return false;
+
+      const as = timeToNumber(a.startTime);
+      const ae = timeToNumber(a.endTime);
+
+      return !(e <= as || s >= ae);
+    });
+  };
+
+  const checkWorkingTime = (empId: number, date: Dayjs, time: Dayjs) => {
     const emp = employees.find(e => e.id === empId);
     if (!emp) return false;
-    return emp.workingDays.includes(date.day());
+
+    const day = date.day();
+    const t = time.hour() + time.minute() / 60;
+
+    return emp.workSchedule.some(s => {
+      if (s.day !== day) return false;
+
+      const start = timeToNumber(s.startTime);
+      const end = timeToNumber(s.endTime);
+
+      return t >= start && t < end;
+    });
   };
 
-  // 🔥 check max khách/ngày
   const checkMaxCustomer = (empId: number, date: string) => {
     const emp = employees.find(e => e.id === empId);
     if (!emp) return false;
@@ -66,7 +91,11 @@ export default () => {
       a => a.employeeId === empId && a.date === date
     ).length;
 
-    return count < emp.maxCustomer;
+    return count < emp.maxCustomerPerDay;
+  };
+
+  const getReview = (appointmentId: number) => {
+    return reviews.find(r => r.appointmentId === appointmentId);
   };
 
   const submit = async () => {
@@ -76,34 +105,36 @@ export default () => {
     if (!service) return;
 
     const dateStr = v.date.format('YYYY-MM-DD');
-    const end = v.start + service.duration / 60;
 
-    // ❌ check ngày làm
-    if (!checkWorkingDay(v.employeeId, v.date)) {
-      message.error('Nhân viên không làm ngày này');
+    const startTime = v.time.format('HH:mm');
+    const endTime = v.time.add(service.duration, 'minute').format('HH:mm');
+
+    if (!checkWorkingTime(v.employeeId, v.date, v.time)) {
+      message.error('Không nằm trong giờ làm');
       return;
     }
 
-    // ❌ check max khách
     if (!checkMaxCustomer(v.employeeId, dateStr)) {
-      message.error('Nhân viên đã đủ khách trong ngày');
+      message.error('Đã đủ khách trong ngày');
       return;
     }
 
-    // ❌ check trùng lịch
-    if (checkTrung(v.employeeId, dateStr, v.start, end)) {
+    if (checkTrung(v.employeeId, dateStr, startTime, endTime)) {
       message.error('Trùng lịch');
       return;
     }
 
     const newItem: IAppointment = {
       id: Date.now(),
+      customerName: 'Khách lẻ',
+      customerPhone: '---',
       employeeId: v.employeeId,
       serviceId: v.serviceId,
       date: dateStr,
-      start: v.start,
-      end,
+      startTime,
+      endTime,
       status: 'pending',
+      createdAt: dayjs().format('YYYY-MM-DD HH:mm'),
     };
 
     saveAppointments([...appointments, newItem]);
@@ -123,11 +154,30 @@ export default () => {
 
     const v = await reviewForm.validateFields();
 
-    saveAppointments(
-      appointments.map(a =>
-        a.id === current.id ? { ...a, ...v } : a
-      )
-    );
+    const existing = reviews.find(r => r.appointmentId === current.id);
+
+    if (existing) {
+      // update
+      saveReviews(
+        reviews.map(r =>
+          r.appointmentId === current.id ? { ...r, ...v } : r
+        )
+      );
+    } else {
+      // create mới
+      const newReview: IReview = {
+        id: Date.now(),
+        appointmentId: current.id,
+        employeeId: current.employeeId,
+        serviceId: current.serviceId,
+        customerName: current.customerName,
+        rating: v.rating,
+        comment: v.comment,
+        createdAt: dayjs().format('YYYY-MM-DD HH:mm'),
+      };
+
+      saveReviews([...reviews, newReview]);
+    }
 
     setReviewOpen(false);
   };
@@ -136,7 +186,7 @@ export default () => {
     { title: 'Ngày', dataIndex: 'date' },
     {
       title: 'Giờ',
-      render: (_, r) => `${r.start}h - ${r.end}h`,
+      render: (_, r) => `${r.startTime} - ${r.endTime}`,
     },
     {
       title: 'Trạng thái',
@@ -156,32 +206,36 @@ export default () => {
     },
     {
       title: 'Đánh giá',
-      render: (_, r) =>
-        r.status === 'done' ? (
+      render: (_, r) => {
+        const review = getReview(r.id);
+
+        return r.status === 'done' ? (
           <Button
             onClick={() => {
               setCurrent(r);
               reviewForm.setFieldsValue({
-                rating: r.rating,
-                comment: r.comment,
+                rating: review?.rating,
+                comment: review?.comment,
               });
               setReviewOpen(true);
             }}
           >
-            Đánh giá
+            {review ? 'Xem/Sửa' : 'Đánh giá'}
           </Button>
-        ) : '---',
+        ) : '---';
+      },
     },
   ];
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Đặt lịch</Button>
+      <Button type='primary' onClick={() => setOpen(true)}>+ Đặt lịch</Button>
 
       <Table rowKey="id" dataSource={appointments} columns={columns} />
 
       <Modal open={open} onOk={submit} onCancel={() => setOpen(false)}>
         <Form form={form} layout="vertical">
+
           <Form.Item name="employeeId" label="Nhân viên" rules={[{ required: true }]}>
             <Select
               options={employees.map(e => ({
@@ -204,9 +258,10 @@ export default () => {
             <DatePicker />
           </Form.Item>
 
-          <Form.Item name="start" label="Giờ bắt đầu" rules={[{ required: true }]}>
-            <InputNumber style={{ width: '100%' }} />
+          <Form.Item name="time" label="Giờ bắt đầu" rules={[{ required: true }]}>
+            <TimePicker format="HH:mm" minuteStep={15} />
           </Form.Item>
+
         </Form>
       </Modal>
 
