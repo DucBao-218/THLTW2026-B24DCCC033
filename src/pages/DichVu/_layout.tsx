@@ -1,12 +1,11 @@
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
 
-
-export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6; 
+export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface IWorkShift {
   day: DayOfWeek;
-  startTime: string; 
-  endTime: string;   
+  startTime: string;
+  endTime: string;
 }
 
 export interface IEmployee {
@@ -15,15 +14,15 @@ export interface IEmployee {
   role: string;
   phone?: string;
   maxCustomerPerDay: number;
-  workSchedule: IWorkShift[];   
-  serviceIds: number[];        
+  workSchedule: IWorkShift[];
+  serviceIds: number[];
 }
 
 export interface IService {
   id: number;
   name: string;
   price: number;
-  duration: number; 
+  duration: number;
   category: string;
 }
 
@@ -31,27 +30,27 @@ export type AppointmentStatus = 'pending' | 'confirmed' | 'done' | 'cancel';
 
 export interface IAppointment {
   id: number;
-  customerName: string;    
-  customerPhone: string;   
+  customerName: string;
+  customerPhone: string;
   employeeId: number;
   serviceId: number;
-  date: string;           
-  startTime: string;       
-  endTime: string;         
+  date: string;
+  startTime: string;
+  endTime: string;
   status: AppointmentStatus;
-  notes?: string;          
-  createdAt: string;      
+  notes?: string;
+  createdAt: string;
 }
 
-export interface IReview {  
+export interface IReview {
   id: number;
   appointmentId: number;
   employeeId: number;
   serviceId: number;
   customerName: string;
-  rating: number;        
+  rating: number;
   comment: string;
-  reply?: string;          
+  reply?: string;
   createdAt: string;
 }
 
@@ -60,17 +59,23 @@ export interface IAppContext {
   services: IService[];
   appointments: IAppointment[];
   reviews: IReview[];
+
   saveEmployees: (data: IEmployee[]) => void;
   saveServices: (data: IService[]) => void;
   saveAppointments: (data: IAppointment[]) => void;
   saveReviews: (data: IReview[]) => void;
-}
 
+  getReviewByAppointment: (appointmentId: number) => IReview | undefined;
+}
 
 const SEED_EMPLOYEES: IEmployee[] = [
   {
-    id: 1, name: 'Nguyễn Văn An', role: 'Thợ cắt tóc senior',
-    phone: '0901234567', maxCustomerPerDay: 8, serviceIds: [1, 2, 3],
+    id: 1,
+    name: 'Nguyễn Văn An',
+    role: 'Thợ cắt tóc senior',
+    phone: '0901234567',
+    maxCustomerPerDay: 8,
+    serviceIds: [1, 2, 3],
     workSchedule: [
       { day: 1, startTime: '09:00', endTime: '18:00' },
       { day: 2, startTime: '09:00', endTime: '18:00' },
@@ -80,29 +85,27 @@ const SEED_EMPLOYEES: IEmployee[] = [
       { day: 6, startTime: '08:00', endTime: '16:00' },
     ],
   },
-  {
-    id: 2, name: 'Trần Thị Bình', role: 'Chuyên viên spa',
-    phone: '0912345678', maxCustomerPerDay: 6, serviceIds: [4, 5, 6],
-    workSchedule: [
-      { day: 1, startTime: '10:00', endTime: '19:00' },
-      { day: 3, startTime: '10:00', endTime: '19:00' },
-      { day: 4, startTime: '10:00', endTime: '19:00' },
-      { day: 5, startTime: '10:00', endTime: '19:00' },
-      { day: 6, startTime: '09:00', endTime: '17:00' },
-      { day: 0, startTime: '09:00', endTime: '15:00' },
-    ],
-  },
 ];
 
 const SEED_SERVICES: IService[] = [
   { id: 1, name: 'Cắt tóc nam', price: 80000, duration: 30, category: 'Tóc' },
   { id: 2, name: 'Cắt tóc nữ', price: 120000, duration: 60, category: 'Tóc' },
   { id: 3, name: 'Nhuộm tóc', price: 350000, duration: 120, category: 'Tóc' },
-  { id: 4, name: 'Massage toàn thân', price: 250000, duration: 90, category: 'Spa' },
-  { id: 5, name: 'Chăm sóc da mặt', price: 180000, duration: 60, category: 'Spa' },
-  { id: 6, name: 'Sơn móng tay', price: 100000, duration: 45, category: 'Làm đẹp' },
 ];
 
+const SEED_REVIEWS: IReview[] = [
+  {
+    id: 1,
+    appointmentId: 1,
+    employeeId: 1,
+    serviceId: 1,
+    customerName: 'Bảo',
+    rating: 5,
+    comment: 'Cắt đẹp, nhân viên nhiệt tình',
+    reply: 'Cảm ơn bạn, hẹn gặp lại!',
+    createdAt: new Date().toISOString(),
+  },
+];
 
 interface Props {
   children: ReactNode;
@@ -117,16 +120,41 @@ export default ({ children }: Props) => {
   const [reviews, setReviews] = useState<IReview[]>([]);
 
   useEffect(() => {
-    const storedEmployees = localStorage.getItem('employees');
-    const storedServices = localStorage.getItem('services');
+    const safeParse = (key: string, fallback: any) => {
+      try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : fallback;
+      } catch {
+        return fallback;
+      }
+    };
 
-    setEmployees(storedEmployees ? JSON.parse(storedEmployees) : SEED_EMPLOYEES);
-    setServices(storedServices ? JSON.parse(storedServices) : SEED_SERVICES);
-    setAppointments(JSON.parse(localStorage.getItem('appointments') || '[]'));
-    setReviews(JSON.parse(localStorage.getItem('reviews') || '[]'));
+    const cleanEmployees = (list: IEmployee[]): IEmployee[] => {
+      return list.map(e => ({
+        ...e,
+        workSchedule: (e.workSchedule || []).map(s => {
+          const validTime = (t: string) =>
+            typeof t === 'string' && /^\d{2}:\d{2}$/.test(t);
 
-    if (!storedEmployees) localStorage.setItem('employees', JSON.stringify(SEED_EMPLOYEES));
-    if (!storedServices) localStorage.setItem('services', JSON.stringify(SEED_SERVICES));
+          return {
+            ...s,
+            startTime: validTime(s.startTime) ? s.startTime : '09:00',
+            endTime: validTime(s.endTime) ? s.endTime : '18:00',
+          };
+        }),
+      }));
+    };
+
+    const empData = cleanEmployees(
+      safeParse('employees', SEED_EMPLOYEES)
+    );
+
+    setEmployees(empData);
+    setServices(safeParse('services', SEED_SERVICES));
+    setAppointments(safeParse('appointments', []));
+    setReviews(safeParse('reviews', SEED_REVIEWS));
+
+    localStorage.setItem('employees', JSON.stringify(empData));
   }, []);
 
   const saveEmployees = (data: IEmployee[]) => {
@@ -149,11 +177,22 @@ export default ({ children }: Props) => {
     localStorage.setItem('reviews', JSON.stringify(data));
   };
 
+  const getReviewByAppointment = (appointmentId: number) => {
+    return reviews.find(r => r.appointmentId === appointmentId);
+  };
+
   return (
     <AppContext.Provider
       value={{
-        employees, services, appointments, reviews,
-        saveEmployees, saveServices, saveAppointments, saveReviews,
+        employees,
+        services,
+        appointments,
+        reviews,
+        saveEmployees,
+        saveServices,
+        saveAppointments,
+        saveReviews,
+        getReviewByAppointment,
       }}
     >
       {children}

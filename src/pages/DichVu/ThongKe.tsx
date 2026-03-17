@@ -9,7 +9,21 @@ import {
   Divider,
   Segmented,
 } from 'antd';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from 'recharts';
 import { AppContext } from './_layout';
+
+const COLORS = ['#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1'];
 
 export default () => {
   const context = useContext(AppContext);
@@ -44,7 +58,7 @@ export default () => {
       const key =
         mode === 'day'
           ? a.date
-          : a.date.slice(0, 7); 
+          : a.date.slice(0, 7);
 
       map[key] = (map[key] || 0) + 1;
     });
@@ -132,6 +146,15 @@ export default () => {
             {item.date}: {item.count} lịch
           </p>
         ))}
+
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={appointmentStats}>
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="count" fill="#1890ff" />
+          </BarChart>
+        </ResponsiveContainer>
       </Card>
 
       <Card title="Nhân viên xuất sắc 🥇" style={{ marginBottom: 20 }}>
@@ -159,7 +182,7 @@ export default () => {
         })}
       </Card>
 
-      <Card title="Doanh thu theo dịch vụ">
+      <Card title="Doanh thu theo dịch vụ" style={{ marginBottom: 20 }}>
         {revenueByService.map(s => {
           const percent = (s.revenue / maxServiceRevenue) * 100;
 
@@ -177,6 +200,26 @@ export default () => {
             </div>
           );
         })}
+      </Card>
+
+      <Card title="Biểu đồ doanh thu dịch vụ">
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={revenueByService}
+              dataKey="revenue"
+              nameKey="name"
+              outerRadius={100}
+              label
+            >
+              {revenueByService.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
       </Card>
 
     </div>

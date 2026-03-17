@@ -18,8 +18,8 @@ import { AppContext, IEmployee, DayOfWeek } from './_layout';
 type EmployeeForm = Omit<IEmployee, 'id' | 'workSchedule'> & {
   workSchedule: {
     day: DayOfWeek;
-    startTime: Dayjs;
-    endTime: Dayjs;
+    startTime: Dayjs | null;
+    endTime: Dayjs | null;
   }[];
 };
 
@@ -43,6 +43,11 @@ export default () => {
   const [editing, setEditing] = useState<IEmployee | null>(null);
   const [form] = Form.useForm<EmployeeForm>();
 
+  const parseTime = (t: any) => {
+    const d = dayjs(t, 'HH:mm', true);
+    return d.isValid() ? d : null;
+  };
+
   const submit = async () => {
     const values = await form.validateFields();
 
@@ -52,8 +57,8 @@ export default () => {
 
     const formattedSchedule = values.workSchedule.map(s => ({
       ...s,
-      startTime: s.startTime.format('HH:mm'),
-      endTime: s.endTime.format('HH:mm'),
+      startTime: s.startTime ? s.startTime.format('HH:mm') : '09:00',
+      endTime: s.endTime ? s.endTime.format('HH:mm') : '18:00',
     }));
 
     const newData = {
@@ -110,10 +115,12 @@ export default () => {
       render: (_, r) =>
         r.workSchedule?.length
           ? r.workSchedule
-              .map(
-                s =>
-                  `${DAY_LABEL[s.day]}: ${s.startTime} - ${s.endTime}`
-              )
+              .map(s => {
+                const start = s.startTime || '--:--';
+                const end = s.endTime || '--:--';
+
+                return `${DAY_LABEL[s.day]}: ${start} - ${end}`;
+              })
               .join(' | ')
           : '---',
     },
@@ -136,10 +143,10 @@ export default () => {
 
               form.setFieldsValue({
                 ...r,
-                workSchedule: r.workSchedule.map(s => ({
+                workSchedule: (r.workSchedule || []).map(s => ({
                   ...s,
-                  startTime: dayjs(s.startTime, 'HH:mm'),
-                  endTime: dayjs(s.endTime, 'HH:mm'),
+                  startTime: parseTime(s.startTime),
+                  endTime: parseTime(s.endTime),
                 })),
               });
 
@@ -163,7 +170,7 @@ export default () => {
   return (
     <>
       <Button
-        type='primary'
+        type="primary"
         onClick={() => {
           setEditing(null);
           form.resetFields();
@@ -214,7 +221,7 @@ export default () => {
                     <Form.Item
                       {...field}
                       name={[field.name, 'startTime']}
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: 'Chọn giờ' }]}
                     >
                       <TimePicker format="HH:mm" minuteStep={15} />
                     </Form.Item>
@@ -222,7 +229,7 @@ export default () => {
                     <Form.Item
                       {...field}
                       name={[field.name, 'endTime']}
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: 'Chọn giờ' }]}
                     >
                       <TimePicker format="HH:mm" minuteStep={15} />
                     </Form.Item>
@@ -233,7 +240,9 @@ export default () => {
                   </div>
                 ))}
 
-                <Button onClick={() => add()}>+ Thêm ca làm</Button>
+                <Button onClick={() => add()}>
+                  + Thêm ca làm
+                </Button>
               </>
             )}
           </Form.List>

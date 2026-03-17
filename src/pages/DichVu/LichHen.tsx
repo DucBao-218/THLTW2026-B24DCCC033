@@ -25,6 +25,7 @@ type AppointmentForm = {
 type ReviewForm = {
   rating: number;
   comment: string;
+  reply?: string;
 };
 
 export default () => {
@@ -46,6 +47,10 @@ export default () => {
 
   const [form] = Form.useForm<AppointmentForm>();
   const [reviewForm] = Form.useForm<ReviewForm>();
+
+  const getEmployeeName = (id: number) => {
+    return employees.find(e => e.id === id)?.name || '---';
+  };
 
   const timeToNumber = (t: string) => {
     const [h, m] = t.split(':').map(Number);
@@ -105,7 +110,6 @@ export default () => {
     if (!service) return;
 
     const dateStr = v.date.format('YYYY-MM-DD');
-
     const startTime = v.time.format('HH:mm');
     const endTime = v.time.add(service.duration, 'minute').format('HH:mm');
 
@@ -139,6 +143,7 @@ export default () => {
 
     saveAppointments([...appointments, newItem]);
     setOpen(false);
+    form.resetFields();
   };
 
   const updateStatus = (id: number, status: IAppointment['status']) => {
@@ -157,14 +162,12 @@ export default () => {
     const existing = reviews.find(r => r.appointmentId === current.id);
 
     if (existing) {
-      // update
       saveReviews(
         reviews.map(r =>
           r.appointmentId === current.id ? { ...r, ...v } : r
         )
       );
     } else {
-      // create mới
       const newReview: IReview = {
         id: Date.now(),
         appointmentId: current.id,
@@ -173,6 +176,7 @@ export default () => {
         customerName: current.customerName,
         rating: v.rating,
         comment: v.comment,
+        reply: v.reply,
         createdAt: dayjs().format('YYYY-MM-DD HH:mm'),
       };
 
@@ -180,14 +184,26 @@ export default () => {
     }
 
     setReviewOpen(false);
+    reviewForm.resetFields();
   };
 
   const columns: ColumnsType<IAppointment> = [
+    {
+      title: 'Nhân viên',
+      render: (_, r) => (
+        <span>
+          {getEmployeeName(r.employeeId)}
+        </span>
+      ),
+    },
+
     { title: 'Ngày', dataIndex: 'date' },
+
     {
       title: 'Giờ',
       render: (_, r) => `${r.startTime} - ${r.endTime}`,
     },
+
     {
       title: 'Trạng thái',
       render: (_, r) => (
@@ -204,54 +220,62 @@ export default () => {
         />
       ),
     },
+
     {
       title: 'Đánh giá',
       render: (_, r) => {
         const review = getReview(r.id);
+        if (r.status !== 'done') return '---';
 
-        return r.status === 'done' ? (
-          <Button
-            onClick={() => {
-              setCurrent(r);
-              reviewForm.setFieldsValue({
-                rating: review?.rating,
-                comment: review?.comment,
-              });
-              setReviewOpen(true);
-            }}
-          >
-            {review ? 'Xem/Sửa' : 'Đánh giá'}
-          </Button>
-        ) : '---';
+        return (
+          <>
+            {review && (
+              <div style={{ marginBottom: 8 }}>
+                ⭐ {review.rating} <br />
+                {review.comment}
+                {review.reply && (
+                  <div style={{ color: 'green' }}>
+                    ↳ {review.reply}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <Button
+              onClick={() => {
+                setCurrent(r);
+                reviewForm.setFieldsValue({
+                  rating: review?.rating,
+                  comment: review?.comment,
+                  reply: review?.reply,
+                });
+                setReviewOpen(true);
+              }}
+            >
+              {review ? 'Sửa' : 'Đánh giá'}
+            </Button>
+          </>
+        );
       },
     },
   ];
 
   return (
     <>
-      <Button type='primary' onClick={() => setOpen(true)}>+ Đặt lịch</Button>
+      <Button type="primary" onClick={() => setOpen(true)}>
+        + Đặt lịch
+      </Button>
 
       <Table rowKey="id" dataSource={appointments} columns={columns} />
 
       <Modal open={open} onOk={submit} onCancel={() => setOpen(false)}>
         <Form form={form} layout="vertical">
-
           <Form.Item name="employeeId" label="Nhân viên" rules={[{ required: true }]}>
-            <Select
-              options={employees.map(e => ({
-                value: e.id,
-                label: e.name,
-              }))}
-            />
+            <Select options={employees.map(e => ({ value: e.id, label: e.name }))} />
           </Form.Item>
 
           <Form.Item name="serviceId" label="Dịch vụ" rules={[{ required: true }]}>
-            <Select
-              options={services.map(s => ({
-                value: s.id,
-                label: s.name,
-              }))}
-            />
+            <Select options={services.map(s => ({ value: s.id, label: s.name }))} />
           </Form.Item>
 
           <Form.Item name="date" label="Ngày" rules={[{ required: true }]}>
@@ -261,17 +285,21 @@ export default () => {
           <Form.Item name="time" label="Giờ bắt đầu" rules={[{ required: true }]}>
             <TimePicker format="HH:mm" minuteStep={15} />
           </Form.Item>
-
         </Form>
       </Modal>
 
       <Modal open={reviewOpen} onOk={submitReview} onCancel={() => setReviewOpen(false)}>
         <Form form={reviewForm} layout="vertical">
-          <Form.Item name="rating" label="Sao">
+          <Form.Item name="rating" label="Sao" rules={[{ required: true }]}>
             <Rate />
           </Form.Item>
-          <Form.Item name="comment" label="Nhận xét">
+
+          <Form.Item name="comment" label="Nhận xét" rules={[{ required: true }]}>
             <Input.TextArea />
+          </Form.Item>
+
+          <Form.Item name="reply" label="Phản hồi nhân viên">
+            <Input.TextArea placeholder="Nhập phản hồi..." />
           </Form.Item>
         </Form>
       </Modal>
