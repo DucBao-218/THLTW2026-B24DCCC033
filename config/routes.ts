@@ -81,6 +81,34 @@ export default [
         icon: 'QuestionCircleOutlined',
         component: './QuestionBank',
     },
+    {
+        path: '/dich-vu',
+        name: 'Quản lý dịch vụ',
+        icon: 'SettingOutlined',
+        component: './DichVu/_layout',
+        routes: [
+            {
+            path: '/dich-vu/nhan-vien',
+            name: 'Nhân viên',
+            component: './DichVu/NhanVien',
+            },
+            {
+            path: '/dich-vu/dich-vu',
+            name: 'Dịch vụ',
+            component: './DichVu/DichVu',
+            },
+            {
+            path: '/dich-vu/lich-hen',
+            name: 'Lịch hẹn',
+            component: './DichVu/LichHen',
+            },
+            {
+            path: '/dich-vu/thong-ke',
+            name: 'Thống kê',
+            component: './DichVu/ThongKe',
+            },
+        ],
+    },
 
     // DANH MUC HE THONG
     // {
