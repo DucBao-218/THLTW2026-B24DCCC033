@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
+import { useModel } from 'umi';
 import { Button, Table, Modal, Form, Input, Select, Switch, Space, Popconfirm, message, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, LockOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import type { CauHinhItem } from '../../models/vanBang';
 
 const { Option } = Select;
 
-interface CauHinhItem {
-    id: string;
-    ten: string;
-    kieuDuLieu: 'String' | 'Number' | 'Date';
-    batBuoc: boolean;
-}
+const kieuColor: Record<string, string> = { String: 'blue', Number: 'orange', Date: 'green' };
 
-const kieuDuLieuColor: Record<string, string> = {
-    String: 'blue',
-    Number: 'orange',
-    Date: 'green',
-};
-
-const defaultFields = [
+const DEFAULT_FIELDS = [
     { ten: 'Số vào sổ', kieuDuLieu: 'Number', note: 'Tự động tăng' },
     { ten: 'Số hiệu văn bằng', kieuDuLieu: 'String', note: 'Bắt buộc' },
     { ten: 'Mã sinh viên', kieuDuLieu: 'String', note: 'Bắt buộc' },
@@ -27,14 +18,8 @@ const defaultFields = [
 ];
 
 const CauHinhBieuMau: React.FC = () => {
-    const [data, setData] = useState<CauHinhItem[]>([
-        { id: 'cf1', ten: 'Dân tộc', kieuDuLieu: 'String', batBuoc: false },
-        { id: 'cf2', ten: 'Nơi sinh', kieuDuLieu: 'String', batBuoc: false },
-        { id: 'cf3', ten: 'Điểm trung bình', kieuDuLieu: 'Number', batBuoc: true },
-        { id: 'cf4', ten: 'Xếp hạng', kieuDuLieu: 'String', batBuoc: true },
-        { id: 'cf5', ten: 'Hệ đào tạo', kieuDuLieu: 'String', batBuoc: true },
-        { id: 'cf6', ten: 'Ngày nhập học', kieuDuLieu: 'Date', batBuoc: false },
-    ]);
+    const { cauHinh, setCauHinh } = useModel('vanBang');
+
     const [open, setOpen] = useState(false);
     const [editItem, setEditItem] = useState<CauHinhItem | null>(null);
     const [form] = Form.useForm();
@@ -47,24 +32,22 @@ const CauHinhBieuMau: React.FC = () => {
 
     const handleSave = async () => {
         const values = await form.validateFields();
-        const isDuplicate = data.some(
-            d => d.ten.toLowerCase() === values.ten.toLowerCase() && d.id !== editItem?.id
-        );
-        if (isDuplicate) { message.error('Tên trường đã tồn tại!'); return; }
-
+        if (cauHinh.some(c => c.ten.toLowerCase() === values.ten.toLowerCase() && c.id !== editItem?.id)) {
+            message.error('Tên trường đã tồn tại!'); return;
+        }
         if (editItem) {
-            setData(prev => prev.map(d => d.id === editItem.id ? { ...d, ...values } : d));
+            setCauHinh(prev => prev.map(c => c.id === editItem.id ? { ...c, ...values } : c));
             message.success('Cập nhật thành công');
         } else {
-            setData(prev => [...prev, { ...values, id: `cf_${Date.now()}` }]);
-            message.success('Thêm mới thành công');
+            setCauHinh(prev => [...prev, { ...values, id: `cf_${Date.now()}` }]);
+            message.success('Thêm trường thành công');
         }
         setOpen(false);
         form.resetFields();
     };
 
     const handleDelete = (id: string) => {
-        setData(prev => prev.filter(d => d.id !== id));
+        setCauHinh(prev => prev.filter(c => c.id !== id));
         message.success('Đã xóa trường thông tin');
     };
 
@@ -72,11 +55,11 @@ const CauHinhBieuMau: React.FC = () => {
         { title: 'Tên trường', dataIndex: 'ten', key: 'ten' },
         {
             title: 'Kiểu dữ liệu', dataIndex: 'kieuDuLieu', key: 'kieuDuLieu', width: 140,
-            render: (v) => <Tag color={kieuDuLieuColor[v]}>{v}</Tag>,
+            render: v => <Tag color={kieuColor[v]}>{v}</Tag>,
         },
         {
             title: 'Bắt buộc', dataIndex: 'batBuoc', key: 'batBuoc', width: 100,
-            render: (v) => v ? <Tag color="red">Có</Tag> : <Tag>Không</Tag>,
+            render: v => v ? <Tag color="red">Có</Tag> : <Tag>Không</Tag>,
         },
         {
             title: 'Thao tác', key: 'action', width: 140,
@@ -86,6 +69,7 @@ const CauHinhBieuMau: React.FC = () => {
                     <Popconfirm
                         title="Xóa trường này?"
                         onConfirm={() => handleDelete(record.id)}
+                        okText="Xóa" cancelText="Hủy"
                     >
                         <Button size="small" danger icon={<DeleteOutlined />}>Xóa</Button>
                     </Popconfirm>
@@ -107,26 +91,18 @@ const CauHinhBieuMau: React.FC = () => {
             <Table
                 rowKey="ten"
                 size="small"
-                style={{ marginBottom: 24, opacity: 0.7 }}
+                style={{ marginBottom: 24, opacity: 0.65 }}
                 pagination={false}
-                dataSource={defaultFields}
+                dataSource={DEFAULT_FIELDS}
                 columns={[
                     { title: 'Tên trường', dataIndex: 'ten', key: 'ten' },
-                    {
-                        title: 'Kiểu dữ liệu', dataIndex: 'kieuDuLieu', key: 'kieuDuLieu', width: 140,
-                        render: (v: string) => <Tag color={kieuDuLieuColor[v]}>{v}</Tag>,
-                    },
+                    { title: 'Kiểu dữ liệu', dataIndex: 'kieuDuLieu', key: 'kieuDuLieu', width: 140, render: (v: string) => <Tag color={kieuColor[v]}>{v}</Tag> },
                     { title: 'Ghi chú', dataIndex: 'note', key: 'note', width: 140 },
                 ]}
             />
 
-            <h4 style={{ color: '#888', marginBottom: 8 }}>Trường cấu hình ({data.length})</h4>
-            <Table
-                rowKey="id"
-                columns={customColumns}
-                dataSource={data}
-                pagination={false}
-            />
+            <h4 style={{ color: '#888', marginBottom: 8 }}>Trường cấu hình ({cauHinh.length})</h4>
+            <Table rowKey="id" columns={customColumns} dataSource={cauHinh} pagination={false} />
 
             <Modal
                 title={editItem ? 'Chỉnh sửa trường thông tin' : 'Thêm trường thông tin'}
@@ -147,7 +123,7 @@ const CauHinhBieuMau: React.FC = () => {
                             <Option value="Date">Date — Ngày tháng</Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item name="batBuoc" label="Bắt buộc" valuePropName="checked">
+                    <Form.Item name="batBuoc" label="Bắt buộc nhập" valuePropName="checked">
                         <Switch checkedChildren="Có" unCheckedChildren="Không" />
                     </Form.Item>
                 </Form>
