@@ -109,6 +109,44 @@ export default [
             },
         ],
     },
+    {
+        path: '/van-bang',
+        name: 'Quản lý văn bằng',
+        icon: 'BookOutlined',
+        component: './VanBang/_layout',
+        routes: [
+            {
+                path: '/van-bang/so-van-bang',
+                name: 'Sổ văn bằng',
+                component: './VanBang/SoVanBang',
+            },
+            {
+                path: '/van-bang/quyet-dinh',
+                name: 'Quyết định tốt nghiệp',
+                component: './VanBang/QuyetDinh',
+            },
+            {
+                path: '/van-bang/cau-hinh-bieu-mau',
+                name: 'Cấu hình biểu mẫu',
+                component: './VanBang/CauHinhBieuMau',
+            },
+            {
+                path: '/van-bang/danh-sach',
+                name: 'Danh sách văn bằng',
+                component: './VanBang/DanhSachVanBang',
+            },
+            {
+                path: '/van-bang/tra-cuu',
+                name: 'Tra cứu văn bằng',
+                component: './VanBang/TraCuu',
+            },
+            {
+                path: '/van-bang/thong-ke',
+                name: 'Thống kê',
+                component: './VanBang/ThongKe',
+            },
+        ],
+    },
 
     // DANH MUC HE THONG
     // {
