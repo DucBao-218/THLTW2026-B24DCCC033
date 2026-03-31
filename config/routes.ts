@@ -147,6 +147,34 @@ export default [
             },
         ],
     },
+    {
+        path: '/cau-lac-bo',
+        name: 'Quản lý câu lạc bộ',
+        icon: 'TeamOutlined',
+        component: './CauLacBo/_layout',
+        routes: [
+            {
+            path: '/cau-lac-bo/danh-sach',
+            name: 'Danh sách CLB',
+            component: './CauLacBo/DanhSachCLB',
+            },
+            {
+            path: '/cau-lac-bo/don-dang-ky',
+            name: 'Đơn đăng ký',
+            component: './CauLacBo/DonDangKy',
+            },
+            {
+            path: '/cau-lac-bo/thanh-vien',
+            name: 'Thành viên CLB',
+            component: './CauLacBo/ThanhVien',
+            },
+            {
+            path: '/cau-lac-bo/bao-cao',
+            name: 'Báo cáo thống kê',
+            component: './CauLacBo/BaoCaoThongKe',
+            },
+        ],
+    },
 
     // DANH MUC HE THONG
     // {
