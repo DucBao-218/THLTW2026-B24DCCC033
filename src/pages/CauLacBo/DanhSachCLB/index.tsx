@@ -9,7 +9,7 @@ import {
   ProFormTextArea, 
   ProFormSwitch 
 } from '@ant-design/pro-components';
-import { Button, message, Popconfirm, Space } from 'antd';
+import { Button, message, Popconfirm, Space, Avatar } from 'antd'; 
 import { PlusOutlined } from '@ant-design/icons';
 import { history } from 'umi'; 
 import { Club, getClubs, setClubs } from '../data';
@@ -54,11 +54,10 @@ const DanhSachCLB: React.FC = () => {
     {
       title: 'Ảnh đại diện',
       dataIndex: 'avatar',
-      valueType: 'avatar',
       hideInSearch: true,
-      fieldProps: {
-        size: 'large',
-      },
+      render: (_, record) => (
+        <Avatar src={record.avatar} size={50} /> 
+      ),
     },
     {
       title: 'Tên câu lạc bộ',
@@ -147,7 +146,6 @@ const DanhSachCLB: React.FC = () => {
           
           if (params.foundedDate) {
              data = data.filter(c => {
-
                 return c.foundedDate && c.foundedDate.startsWith(params.foundedDate);
              });
           }
