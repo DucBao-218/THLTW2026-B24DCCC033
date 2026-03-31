@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ProTable, ProColumns, ActionType } from '@ant-design/pro-components';
-import { Modal, Select, message, Button} from 'antd';
+import { Modal, Select, message, Button } from 'antd';
 import { useLocation } from 'umi';
 import { Application, getApps, setApps, getClubs } from '../data';
 
 const ThanhVien: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [apps, setAppsState] = useState<Application[]>(getApps());
   const clubs = getClubs();
   
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -22,22 +21,19 @@ const ThanhVien: React.FC = () => {
     return acc;
   }, {});
 
-  const approvedMembers = apps.filter(app => app.status === 'Approved');
-
   const handleChangeClub = () => {
     if (!targetClubId) return message.error('Vui lòng chọn CLB đích');
     
-    const updated = apps.map(app => 
+    const updated = getApps().map(app => 
       selectedKeys.includes(app.id) ? { ...app, clubId: targetClubId } : app
     );
     
     setApps(updated);
-    setAppsState(updated);
     setIsModalVisible(false);
     setSelectedKeys([]);
     setTargetClubId(undefined);
     message.success('Chuyển câu lạc bộ thành công');
-    actionRef.current?.reload();
+    actionRef.current?.reload(); 
   };
 
   const columns: ProColumns<Application>[] = [
@@ -82,13 +78,27 @@ const ThanhVien: React.FC = () => {
         headerTitle="Danh sách Thành viên"
         actionRef={actionRef}
         rowKey="id"
-        dataSource={approvedMembers}
         columns={columns}
         rowSelection={{
           selectedRowKeys: selectedKeys,
           onChange: setSelectedKeys,
         }}
         form={{ initialValues: { clubId: initialClubId } }} 
+        request={async (params) => {
+          let data = getApps().filter(app => app.status === 'Approved');
+          
+          if (params.fullName) {
+            data = data.filter(a => a.fullName.toLowerCase().includes(params.fullName.toLowerCase()));
+          }
+          if (params.email) {
+            data = data.filter(a => a.email.toLowerCase().includes(params.email.toLowerCase()));
+          }
+          if (params.clubId) {
+            data = data.filter(a => a.clubId === params.clubId);
+          }
+
+          return { data, success: true, total: data.length };
+        }}
         tableAlertRender={({ selectedRowKeys }) => (
           <a onClick={() => setIsModalVisible(true)}>
             Đổi CLB cho {selectedRowKeys.length} thành viên đã chọn

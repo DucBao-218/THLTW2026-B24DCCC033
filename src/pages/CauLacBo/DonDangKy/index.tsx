@@ -8,14 +8,13 @@ import {
   ProFormSelect, 
   ProFormTextArea 
 } from '@ant-design/pro-components';
-import { Modal, Input, message, Tag, List, Space, Popconfirm, Divider, Button } from 'antd';
+import { Modal, Input, message, Tag, List, Space, Popconfirm, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Application, LogEntry, getApps, setApps, getClubs } from '../data';
 import moment from 'moment';
 
 const DonDangKy: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [apps, setAppsState] = useState<Application[]>(getApps());
   const clubs = getClubs();
   
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -36,15 +35,14 @@ const DonDangKy: React.FC = () => {
   const clubOptions = clubs.map(c => ({ label: c.name, value: c.id }));
 
   const handleDelete = (id: string) => {
-    const newData = apps.filter(a => a.id !== id);
+    const newData = getApps().filter(a => a.id !== id);
     setApps(newData);
-    setAppsState(newData);
     message.success('Đã xóa đơn đăng ký');
-    actionRef.current?.reload();
+    actionRef.current?.reload(); 
   };
 
   const handleUpdateStatus = (keys: React.Key[], status: 'Approved' | 'Rejected', reason?: string) => {
-    const updatedApps = apps.map(app => {
+    const updatedApps = getApps().map(app => {
       if (keys.includes(app.id)) {
         const log: LogEntry = {
           time: moment().format('HH:mm DD/MM/YYYY'),
@@ -56,9 +54,8 @@ const DonDangKy: React.FC = () => {
       return app;
     });
     setApps(updatedApps);
-    setAppsState(updatedApps);
     setSelectedRowKeys([]);
-    actionRef.current?.reload();
+    actionRef.current?.reload(); 
     message.success(`Đã cập nhật trạng thái cho ${keys.length} đơn`);
   };
 
@@ -70,7 +67,7 @@ const DonDangKy: React.FC = () => {
       return true;
     }
 
-    let newData = [...apps];
+    let newData = getApps();
     if (formMode === 'edit' && currentRow) {
       newData = newData.map(item => 
         item.id === currentRow.id ? { ...item, ...values } : item
@@ -88,9 +85,8 @@ const DonDangKy: React.FC = () => {
     }
     
     setApps(newData);
-    setAppsState(newData);
     setIsFormOpen(false);
-    actionRef.current?.reload();
+    actionRef.current?.reload(); 
     return true;
   };
 
@@ -132,7 +128,7 @@ const DonDangKy: React.FC = () => {
         const actions: React.ReactNode[] = [];
         
         actions.push(
-          <Button type='primary' key="view" onClick={() => {
+          <Button type="primary" key="view" onClick={() => {
             setCurrentRow(record);
             setFormMode('view');
             setIsFormOpen(true);
@@ -141,15 +137,15 @@ const DonDangKy: React.FC = () => {
 
         if (record.status === 'Pending') {
           actions.push(
-            <Button type='primary' key="edit" onClick={() => {
+            <Button type="primary" key="edit" onClick={() => {
               setCurrentRow(record);
               setFormMode('edit');
               setIsFormOpen(true);
             }}>Sửa</Button>,
-            <Button key="approve" type="primary" onClick={() => handleUpdateStatus([record.id], 'Approved')}>
+            <Button key="approve" type="primary" style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }} onClick={() => handleUpdateStatus([record.id], 'Approved')}>
               Duyệt
             </Button>,
-            <Button key="reject" type="primary" onClick={() => {
+            <Button key="reject" type="primary" style={{ backgroundColor: '#faad14', borderColor: '#faad14' }} onClick={() => {
               setSelectedRowKeys([record.id]);
               setIsRejectModalVisible(true);
             }}>Từ chối</Button>
@@ -167,7 +163,7 @@ const DonDangKy: React.FC = () => {
           </Popconfirm>
         );
         
-        return <Space split={<Divider type="vertical" />}>{actions}</Space>;
+        return <Space wrap>{actions}</Space>;
       },
     },
   ];
@@ -178,11 +174,28 @@ const DonDangKy: React.FC = () => {
         headerTitle="Quản lý đơn đăng ký"
         actionRef={actionRef}
         rowKey="id"
-        dataSource={apps}
         columns={columns}
         rowSelection={{
           selectedRowKeys,
           onChange: setSelectedRowKeys,
+        }}
+        request={async (params) => {
+          let data = getApps();
+          
+          if (params.fullName) {
+            data = data.filter(a => a.fullName.toLowerCase().includes(params.fullName.toLowerCase()));
+          }
+          if (params.email) {
+            data = data.filter(a => a.email.toLowerCase().includes(params.email.toLowerCase()));
+          }
+          if (params.clubId) {
+            data = data.filter(a => a.clubId === params.clubId);
+          }
+          if (params.status) {
+            data = data.filter(a => a.status === params.status);
+          }
+
+          return { data, success: true, total: data.length };
         }}
         toolBarRender={() => [
           <Button key="add" type="primary" icon={<PlusOutlined />} onClick={() => {

@@ -9,28 +9,27 @@ import {
   ProFormTextArea, 
   ProFormSwitch 
 } from '@ant-design/pro-components';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { history } from 'umi'; 
 import { Club, getClubs, setClubs } from '../data';
+import moment from 'moment'; 
 
 const DanhSachCLB: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [clubs, setClubsState] = useState<Club[]>(getClubs());
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState<Club | undefined>(undefined);
 
   const handleDelete = (id: string) => {
-    const newData = clubs.filter(c => c.id !== id);
+    const newData = getClubs().filter(c => c.id !== id);
     setClubs(newData);
-    setClubsState(newData);
     message.success('Đã xóa câu lạc bộ');
-    actionRef.current?.reload();
+    actionRef.current?.reload(); 
   };
 
   const handleFinish = async (values: Record<string, any>) => {
-    let newData = [...clubs];
+    let newData = getClubs();
     if (currentRow) {
       newData = newData.map(item => 
         item.id === currentRow.id ? { ...item, ...values } as Club : item
@@ -46,9 +45,8 @@ const DanhSachCLB: React.FC = () => {
     }
     
     setClubs(newData);
-    setClubsState(newData);
     setIsModalOpen(false);
-    actionRef.current?.reload();
+    actionRef.current?.reload(); 
     return true;
   };
 
@@ -58,17 +56,20 @@ const DanhSachCLB: React.FC = () => {
       dataIndex: 'avatar',
       valueType: 'avatar',
       hideInSearch: true,
+      fieldProps: {
+        size: 'large',
+      },
     },
     {
       title: 'Tên câu lạc bộ',
       dataIndex: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: true, 
     },
     {
       title: 'Ngày thành lập',
       dataIndex: 'foundedDate',
       valueType: 'date',
-      sorter: (a, b) => new Date(a.foundedDate).getTime() - new Date(b.foundedDate).getTime(),
+      sorter: true,
     },
     {
       title: 'Chủ nhiệm',
@@ -86,38 +87,40 @@ const DanhSachCLB: React.FC = () => {
     {
       title: 'Thao tác',
       valueType: 'option',
-      render: (_, record) => [
-        <Button
+      render: (_, record) => (
+        <Space>
+          <Button
             type="primary"
             key="edit" 
             onClick={() => {
                 setCurrentRow(record);
                 setIsModalOpen(true);
             }}
-        >
-          Chỉnh sửa
-        </Button>,
-        <Popconfirm 
-          key="delete" 
-          title="Bạn có chắc chắn muốn xóa CLB này không?" 
-          onConfirm={() => handleDelete(record.id)}
-          okText="Có"
-          cancelText="Không"
-        >
-          <Button type="primary" danger>
-            Xóa
+          >
+            Chỉnh sửa
           </Button>
-        </Popconfirm>,
-        <Button
-          key="members"
-          type="primary"
-          onClick={() => {
-            history.push(`/cau-lac-bo/thanh-vien?clubId=${record.id}`);
-          }}
-        >
-          Thành viên
-        </Button>,
-      ],
+          <Popconfirm 
+            key="delete" 
+            title="Bạn có chắc chắn muốn xóa CLB này không?" 
+            onConfirm={() => handleDelete(record.id)}
+            okText="Có"
+            cancelText="Không"
+          >
+            <Button type="primary" danger>
+              Xóa
+            </Button>
+          </Popconfirm>
+          <Button
+            key="members"
+            type="primary"
+            onClick={() => {
+              history.push(`/cau-lac-bo/thanh-vien?clubId=${record.id}`);
+            }}
+          >
+            Thành viên
+          </Button>
+        </Space>
+      ),
     },
   ];
 
@@ -128,8 +131,39 @@ const DanhSachCLB: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         search={{ labelWidth: 'auto' }}
-        dataSource={clubs}
         columns={columns}
+        request={async (params, sorter) => {
+          let data = getClubs();
+          
+          if (params.name) {
+            data = data.filter(c => c.name.toLowerCase().includes(params.name.toLowerCase()));
+          }
+          if (params.president) {
+            data = data.filter(c => c.president.toLowerCase().includes(params.president.toLowerCase()));
+          }
+          if (params.isActive !== undefined && params.isActive !== '') {
+            data = data.filter(c => String(c.isActive) === String(params.isActive));
+          }
+          
+          if (params.foundedDate) {
+             data = data.filter(c => {
+
+                return c.foundedDate && c.foundedDate.startsWith(params.foundedDate);
+             });
+          }
+
+          if (sorter && Object.keys(sorter).length > 0) {
+            const key = Object.keys(sorter)[0] as keyof Club;
+            const order = sorter[key as string];
+            data.sort((a, b) => {
+              if (a[key] < b[key]) return order === 'ascend' ? -1 : 1;
+              if (a[key] > b[key]) return order === 'ascend' ? 1 : -1;
+              return 0;
+            });
+          }
+
+          return { data, success: true, total: data.length };
+        }}
         toolBarRender={() => [
           <Button 
             key="button" 
