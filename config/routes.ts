@@ -175,6 +175,46 @@ export default [
             },
         ],
     },
+    {
+        path: '/du-lich',
+        name: 'Lập kế hoạch du lịch',
+        icon: 'CompassOutlined',
+        component: './DuLich/_layout',
+        routes: [
+            {
+            path: '/du-lich/kham-pha',
+            name: 'Khám phá điểm đến',
+            component: './DuLich/KhamPha',
+            },
+            {
+            path: '/du-lich/lich-trinh',
+            name: 'Lịch trình du lịch',
+            component: './DuLich/LichTrinh',
+            },
+            {
+            path: '/du-lich/ngan-sach',
+            name: 'Quản lý ngân sách',
+            component: './DuLich/NganSach',
+            },
+            {
+            path: '/du-lich/admin',
+            name: 'Quản trị',
+            icon: 'SettingOutlined',
+            routes: [
+                {
+                path: '/du-lich/admin/diem-den',
+                name: 'Quản lý điểm đến',
+                component: './DuLich/Admin/QuanLyDiemDen',
+                },
+                {
+                path: '/du-lich/admin/thong-ke',
+                name: 'Thống kê báo cáo',
+                component: './DuLich/Admin/ThongKe',
+                },
+            ],
+            },
+        ],
+    },
 
     // DANH MUC HE THONG
     // {
