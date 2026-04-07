@@ -46,14 +46,10 @@ const QuanLyNganSach: React.FC = () => {
 
   const initHangMuc = (lt: LichTrinh, allDD: DiemDen[]) => {
     const savedHangMucs = getFromStorage<{ [key: string]: HangMuc[] }>('HANG_MUC_CHI_TIET', {});
-    
-    if (savedHangMucs[lt.id]) {
-      setHangMucs(savedHangMucs[lt.id]);
-      return;
-    }
 
     let cAnUong = 0;
     let cVeVao = 0;
+    let cDiChuyen = 0;
     let maxLuuTru = 0;
     let hasDiemDen = false; 
 
@@ -64,10 +60,40 @@ const QuanLyNganSach: React.FC = () => {
         if (dd) {
           cAnUong += dd.chiPhiAnUong || 0;
           cVeVao += dd.giaVe || 0;
+          cDiChuyen += dd.chiPhiDiChuyen || 0;
           if ((dd.chiPhiLuuTru || 0) > maxLuuTru) maxLuuTru = dd.chiPhiLuuTru;
         }
       });
     });
+
+    const nights = lt.ngans.length > 0 ? lt.ngans.length - 1 : 0;
+    const cLuuTru = nights * maxLuuTru * lt.soNguoi;
+    
+    cAnUong *= lt.soNguoi;
+    cVeVao *= lt.soNguoi;
+    cDiChuyen *= lt.soNguoi;
+
+    const realChiTieu: Record<string, number> = {
+      anUong: cAnUong,
+      luuTru: cLuuTru,
+      diChuyen: cDiChuyen,
+      veVao: cVeVao,
+      muaSam: 0,
+      khac: 0
+    };
+
+    if (savedHangMucs[lt.id]) {
+      const updatedFromSave = savedHangMucs[lt.id].map(h => {
+        const newChiTieu = realChiTieu[h.key] !== undefined ? realChiTieu[h.key] : h.chiTieu;
+        return { 
+          ...h, 
+          chiTieu: newChiTieu,
+          nganSach: Math.max(h.nganSach, newChiTieu) 
+        };
+      });
+      setHangMucs(updatedFromSave);
+      return;
+    }
 
     if (!hasDiemDen && lt.chiPhiThucTe > 0) {
       const ratios = [0.25, 0.30, 0.20, 0.10, 0.08, 0.07];
@@ -80,32 +106,27 @@ const QuanLyNganSach: React.FC = () => {
       return;
     }
 
-    const nights = lt.ngans.length > 0 ? lt.ngans.length - 1 : 0;
-    const cLuuTru = nights * maxLuuTru * lt.soNguoi;
-    
-    const diff = lt.chiPhiThucTe - cAnUong - cVeVao - cLuuTru;
-    const cDiChuyen = diff > 0 ? diff * 0.7 : 0;
-    const cMuaSam = diff > 0 ? diff * 0.2 : 0;
-    const cKhac = diff > 0 ? diff * 0.1 : 0;
+    const tongChiTieuCung = cAnUong + cLuuTru + cDiChuyen + cVeVao;
+    let tienDu = lt.nganSachTong - tongChiTieuCung;
+    if (tienDu < 0) tienDu = 0; 
 
-    const realChiTieu: Record<string, number> = {
-      anUong: cAnUong,
-      luuTru: cLuuTru,
-      diChuyen: cDiChuyen,
-      veVao: cVeVao,
-      muaSam: cMuaSam,
-      khac: cKhac
+    const tyLeTienDu: Record<string, number> = {
+      anUong: 0.2, 
+      luuTru: 0.1, 
+      diChuyen: 0.1,
+      veVao: 0.0,  
+      muaSam: 0.4, 
+      khac: 0.2
     };
 
-    const totalReal = Object.values(realChiTieu).reduce((a, b) => a + b, 0) || 1;
-    
     const defaults = DEFAULT_HANGMUC.map(h => {
       const chiTieuThucTe = realChiTieu[h.key] || 0;
-      const percent = chiTieuThucTe / totalReal;
+      const nganSachDeXuat = chiTieuThucTe + (tienDu * (tyLeTienDu[h.key] || 0));
+
       return {
         ...h,
         chiTieu: Math.round(chiTieuThucTe),
-        nganSach: Math.round(lt.nganSachTong * (percent > 0 ? percent : (1 / 6))),
+        nganSach: Math.round(nganSachDeXuat), 
       };
     });
 
@@ -139,15 +160,26 @@ const QuanLyNganSach: React.FC = () => {
     const savedHangMucs = getFromStorage<{ [key: string]: HangMuc[] }>('HANG_MUC_CHI_TIET', {});
     savedHangMucs[selectedLT] = hangMucs;
     saveToStorage('HANG_MUC_CHI_TIET', savedHangMucs);
+
+    const tongNS = hangMucs.reduce((s, h) => s + h.nganSach, 0);
+    const tongCT = hangMucs.reduce((s, h) => s + h.chiTieu, 0);
+
+    const updatedLTs = lichTrinhs.map(l => 
+      l.id === selectedLT 
+        ? { ...l, nganSachTong: tongNS, chiPhiThucTe: tongCT } 
+        : l
+    );
+    setLichTrinhs(updatedLTs);
+    saveToStorage(STORAGE_KEYS.LICH_TRINH, updatedLTs);
+
     setEditMode(false);
-    message.success('Đã lưu thay đổi ngân sách!');
+    message.success('Đã lưu & đồng bộ dữ liệu thành công!');
   };
 
-  const currentLT = lichTrinhs.find((l) => l.id === selectedLT);
   const tongNganSach = hangMucs.reduce((s, h) => s + h.nganSach, 0);
   const tongChiTieu = hangMucs.reduce((s, h) => s + h.chiTieu, 0);
-  const conLai = (currentLT?.nganSachTong || 0) - tongChiTieu;
-  const pctSuDung = currentLT && currentLT.nganSachTong > 0 ? Math.round((tongChiTieu / currentLT.nganSachTong) * 100) : 0;
+  const conLai = tongNganSach - tongChiTieu;
+  const pctSuDung = tongNganSach > 0 ? Math.round((tongChiTieu / tongNganSach) * 100) : 0;
 
   const pieData = hangMucs.map((h) => ({
     type: `${h.icon} ${h.ten}`,
@@ -155,7 +187,7 @@ const QuanLyNganSach: React.FC = () => {
     color: h.color,
   }));
 
-  const pieConfig = {
+  const pieConfig: any = {
     data: pieData,
     angleField: 'value',
     colorField: 'type',
@@ -171,7 +203,7 @@ const QuanLyNganSach: React.FC = () => {
     legend: { position: 'bottom' as const },
     statistic: {
       title: { content: 'Tổng chi tiêu', style: { fontSize: '12px' } },
-      content: { content: formatVND(tongChiTieu), style: { fontSize: '14px' } },
+      content: { content: formatVND(tongChiTieu), style: { fontSize: '14px', fontWeight: '600' } },
     },
     interactions: [{ type: 'pie-legend-active' as const }, { type: 'element-active' as const }],
   };
@@ -181,7 +213,7 @@ const QuanLyNganSach: React.FC = () => {
     { hangMuc: h.ten, type: 'Chi tiêu', value: h.chiTieu, color: h.color + '88' },
   ]);
 
-  const barConfig = {
+  const barConfig: any = {
     data: barData,
     xField: 'hangMuc',
     yField: 'value',
@@ -202,15 +234,15 @@ const QuanLyNganSach: React.FC = () => {
   const tableColumns = [
     { title: 'Hạng mục', key: 'ten', render: (_: unknown, r: HangMuc) => <Space><Text>{r.icon}</Text><Text>{r.ten}</Text></Space> },
     {
-      title: 'Ngân sách', dataIndex: 'nganSach', key: 'nganSach',
+      title: 'Ngân sách (Kế hoạch)', dataIndex: 'nganSach', key: 'nganSach',
       render: (v: number, r: HangMuc) =>
         editMode ? (
           <InputNumber
             value={v}
-            min={0}
+            min={r.chiTieu} 
             formatter={(val) => `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             onChange={(val) =>
-              setHangMucs((prev) => prev.map((h) => h.key === r.key ? { ...h, nganSach: val || 0 } : h))
+              setHangMucs((prev) => prev.map((h) => h.key === r.key ? { ...h, nganSach: val || r.chiTieu } : h))
             }
             style={{ width: '100%' }}
             size="small"
@@ -218,9 +250,9 @@ const QuanLyNganSach: React.FC = () => {
         ) : <Text>{formatVND(v)}</Text>,
     },
     {
-      title: 'Chi tiêu', dataIndex: 'chiTieu', key: 'chiTieu',
+      title: 'Chi tiêu (Thực tế)', dataIndex: 'chiTieu', key: 'chiTieu',
       render: (v: number, r: HangMuc) =>
-        editMode ? (
+        editMode && ['muaSam', 'khac'].includes(r.key) ? (
           <InputNumber
             value={v}
             min={0}
@@ -322,7 +354,7 @@ const QuanLyNganSach: React.FC = () => {
           <Card>
             <Statistic
               title="Tổng ngân sách"
-              value={formatVND(currentLT?.nganSachTong || 0)}
+              value={formatVND(tongNganSach)} 
               valueStyle={{ fontSize: screens.xs ? 14 : 16, color: '#1677ff' }}
               prefix={<DollarOutlined />}
             />

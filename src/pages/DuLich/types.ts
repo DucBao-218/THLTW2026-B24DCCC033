@@ -89,7 +89,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-1', ten: 'Vịnh Hạ Long', viTri: 'Quảng Ninh', quocGia: 'Việt Nam',
     loaiHinh: 'bien',
-    hinhAnh: 'https://images.unsplash.com/photo-1573064425046-5499c00bc2b4?w=600&q=80',
+    hinhAnh: 'https://cdn.xanhsm.com/2025/02/c0c9124a-vinh-ha-long-1.jpg',
     moTa: 'Di sản thiên nhiên thế giới với hàng nghìn hòn đảo đá vôi kỳ vĩ nổi trên mặt nước xanh biếc.',
     thoiGianThamQuan: 8, chiPhiAnUong: 300000, chiPhiLuuTru: 800000,
     chiPhiDiChuyen: 400000, rating: 4.8, luotXem: 15200, luotLichTrinh: 842,
@@ -98,7 +98,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-2', ten: 'Hội An', viTri: 'Quảng Nam', quocGia: 'Việt Nam',
     loaiHinh: 'di-tich',
-    hinhAnh: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=600&q=80',
+    hinhAnh: 'https://images2.thanhnien.vn/528068263637045248/2023/4/4/hoi-an-1680591517857660432696.jpg',
     moTa: 'Phố cổ Hội An là thương cảng quốc tế phồn thịnh từ thế kỷ 15-19, được UNESCO công nhận.',
     thoiGianThamQuan: 6, chiPhiAnUong: 250000, chiPhiLuuTru: 600000,
     chiPhiDiChuyen: 700000, rating: 4.7, luotXem: 12800, luotLichTrinh: 721,
@@ -107,7 +107,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-3', ten: 'Đà Lạt', viTri: 'Lâm Đồng', quocGia: 'Việt Nam',
     loaiHinh: 'nui',
-    hinhAnh: 'https://images.unsplash.com/photo-1598394790147-3fe6a88e5f33?w=600&q=80',
+    hinhAnh: 'https://www.pelago.com/img/destinations/da-lat/0829-0623_da-lat.jpg',
     moTa: 'Thành phố ngàn hoa với khí hậu mát mẻ quanh năm, thác nước, hồ và vườn hoa rực rỡ.',
     thoiGianThamQuan: 10, chiPhiAnUong: 200000, chiPhiLuuTru: 500000,
     chiPhiDiChuyen: 600000, rating: 4.6, luotXem: 11500, luotLichTrinh: 680,
@@ -116,7 +116,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-4', ten: 'Phú Quốc', viTri: 'Kiên Giang', quocGia: 'Việt Nam',
     loaiHinh: 'bien',
-    hinhAnh: 'https://images.unsplash.com/photo-1540202404-a2f29016b523?w=600&q=80',
+    hinhAnh: 'https://bcp.cdnchinhphu.vn/334894974524682240/2025/6/23/phu-quoc-17506756503251936667562.jpg',
     moTa: 'Đảo ngọc với bãi biển cát trắng mịn, làn nước trong xanh và resort sang trọng đẳng cấp quốc tế.',
     thoiGianThamQuan: 12, chiPhiAnUong: 400000, chiPhiLuuTru: 1500000,
     chiPhiDiChuyen: 1200000, rating: 4.5, luotXem: 9800, luotLichTrinh: 512,
@@ -125,7 +125,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-5', ten: 'Sapa', viTri: 'Lào Cai', quocGia: 'Việt Nam',
     loaiHinh: 'nui',
-    hinhAnh: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80',
+    hinhAnh: 'https://congdankhuyenhoc.qltns.mediacdn.vn/449484899827462144/2022/12/1/tour-trekking-fansipan-1669866956572303961792.jpg',
     moTa: 'Vùng cao nguyên đá với ruộng bậc thang tuyệt đẹp, văn hóa đặc sắc của các dân tộc thiểu số.',
     thoiGianThamQuan: 8, chiPhiAnUong: 180000, chiPhiLuuTru: 400000,
     chiPhiDiChuyen: 350000, rating: 4.6, luotXem: 10200, luotLichTrinh: 598,
@@ -134,7 +134,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-6', ten: 'Hà Nội', viTri: 'Hà Nội', quocGia: 'Việt Nam',
     loaiHinh: 'thanh-pho',
-    hinhAnh: 'https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=600&q=80',
+    hinhAnh: 'https://cdn.tuoitrethudo.vn/stores/news_dataimages/2024/072024/16/10/ho-hoan-kiem-718520240716105044.jpg?rt=20240716105336',
     moTa: 'Thủ đô nghìn năm văn hiến với Hồ Hoàn Kiếm, phố cổ 36 phố phường và ẩm thực đặc sắc.',
     thoiGianThamQuan: 8, chiPhiAnUong: 250000, chiPhiLuuTru: 700000,
     chiPhiDiChuyen: 0, rating: 4.4, luotXem: 8900, luotLichTrinh: 445,
@@ -143,7 +143,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-7', ten: 'Mù Cang Chải', viTri: 'Yên Bái', quocGia: 'Việt Nam',
     loaiHinh: 'nui',
-    hinhAnh: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+    hinhAnh: 'https://static.tuoitre.vn/tto/i/s626/2014/09/22/tUDB01wo.jpg',
     moTa: 'Ruộng bậc thang vàng rực rỡ mùa lúa chín, một trong những danh thắng cấp quốc gia.',
     thoiGianThamQuan: 6, chiPhiAnUong: 150000, chiPhiLuuTru: 300000,
     chiPhiDiChuyen: 450000, rating: 4.7, luotXem: 7600, luotLichTrinh: 320,
@@ -152,7 +152,7 @@ export const seedDiemDen: DiemDen[] = [
   {
     id: 'dd-8', ten: 'TP. Hồ Chí Minh', viTri: 'TP.HCM', quocGia: 'Việt Nam',
     loaiHinh: 'thanh-pho',
-    hinhAnh: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&q=80',
+    hinhAnh: 'https://tphcm.cdnchinhphu.vn/Uploaded/tranthithom/2017_07_06/TPHCM.jpg',
     moTa: 'Thành phố năng động nhất Việt Nam với cuộc sống sôi động, ẩm thực phong phú và kiến trúc đa dạng.',
     thoiGianThamQuan: 8, chiPhiAnUong: 300000, chiPhiLuuTru: 900000,
     chiPhiDiChuyen: 800000, rating: 4.3, luotXem: 9100, luotLichTrinh: 490,
@@ -161,13 +161,7 @@ export const seedDiemDen: DiemDen[] = [
 ];
 
 export const seedLichTrinh: LichTrinh[] = [
-  {
-    id: 'lt-1', tenLichTrinh: 'Hè Hạ Long 3N2Đ',
-    ngayBatDau: '2025-07-15', ngayKetThuc: '2025-07-17',
-    ngans: [], nganSachTong: 5000000, chiPhiThucTe: 4200000,
-    soNguoi: 2, trangThai: 'completed', createdAt: '2025-06-10',
-    thang: '2025-07',
-  },
+
   {
     id: 'lt-2', tenLichTrinh: 'Sapa Cuối Tuần',
     ngayBatDau: '2025-08-09', ngayKetThuc: '2025-08-11',
@@ -175,13 +169,7 @@ export const seedLichTrinh: LichTrinh[] = [
     soNguoi: 3, trangThai: 'completed', createdAt: '2025-07-20',
     thang: '2025-08',
   },
-  {
-    id: 'lt-3', tenLichTrinh: 'Đà Lạt Lãng Mạn',
-    ngayBatDau: '2025-09-20', ngayKetThuc: '2025-09-23',
-    ngans: [], nganSachTong: 6000000, chiPhiThucTe: 5500000,
-    soNguoi: 2, trangThai: 'confirmed', createdAt: '2025-09-01',
-    thang: '2025-09',
-  },
+
   {
     id: 'lt-4', tenLichTrinh: 'Phú Quốc Luxury',
     ngayBatDau: '2025-10-01', ngayKetThuc: '2025-10-05',
