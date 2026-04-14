@@ -215,6 +215,12 @@ export default [
             },
         ],
     },
+    {
+        path: '/khoa-hoc',
+        name: 'Quản lý khóa học',
+        icon: 'ReadOutlined',
+        component: './KhoaHoc/index',
+    },
 
     // DANH MUC HE THONG
     // {
