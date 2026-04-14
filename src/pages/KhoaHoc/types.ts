@@ -43,6 +43,14 @@ export const saveToStorage = <T>(key: string, value: T): void => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
+export const normalizeStr = (str: string): string =>
+  str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+
 export const generateId = (): string =>
   'KH' +
   Date.now().toString(36).toUpperCase() +

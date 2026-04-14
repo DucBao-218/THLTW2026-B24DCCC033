@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import {
   KhoaHoc, GiangVien, TrangThaiKhoaHoc, TRANG_THAI_CONFIG,
   STORAGE_KEYS, getFromStorage, saveToStorage,
-  seedKhoaHoc, seedGiangVien,
+  seedKhoaHoc, seedGiangVien, normalizeStr,
 } from '../types';
 
 const { Title, Text } = Typography;
@@ -50,7 +50,7 @@ const DanhSachKhoaHoc: React.FC<Props> = ({ onAdd, onEdit, onDelete, refreshKey 
   const getGV = (id: string) => giangViens.find((g) => g.id === id);
 
   const filtered = danhSach.filter((k) => {
-    const matchSearch = k.tenKhoaHoc.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = normalizeStr(k.tenKhoaHoc).includes(normalizeStr(search));
     const matchGV = filterGV ? k.giangVienId === filterGV : true;
     const matchTT = filterTT ? k.trangThai === filterTT : true;
     return matchSearch && matchGV && matchTT;
