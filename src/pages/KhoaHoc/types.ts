@@ -51,18 +51,23 @@ export const normalizeStr = (str: string): string =>
     .replace(/Đ/g, 'D')
     .toLowerCase();
 
-export const generateId = (): string =>
-  'KH' +
-  Date.now().toString(36).toUpperCase() +
-  Math.random().toString(36).substr(2, 4).toUpperCase();
+export const generateId = (prefix: string = 'KH', existingIds: string[] = []): string => {
+  let num = existingIds.length + 1;
+  let id = `${prefix}${String(num).padStart(3, '0')}`;
+  while (existingIds.includes(id)) {
+    num += 1;
+    id = `${prefix}${String(num).padStart(3, '0')}`;
+  }
+  return id;
+};
 
 export const seedGiangVien: GiangVien[] = [
-  { id: 'gv-1', ten: 'Nguyễn Văn Anh', chuyenMon: 'Lập trình Web' },
-  { id: 'gv-2', ten: 'Trần Thị Bình', chuyenMon: 'Data Science' },
-  { id: 'gv-3', ten: 'Lê Văn Cường', chuyenMon: 'Mobile App' },
-  { id: 'gv-4', ten: 'Phạm Thị Dung', chuyenMon: 'UI/UX Design' },
-  { id: 'gv-5', ten: 'Hoàng Văn Em', chuyenMon: 'DevOps & Cloud' },
-  { id: 'gv-6', ten: 'Vũ Thị Phương', chuyenMon: 'AI & Machine Learning' },
+  { id: 'gv-1', ten: 'Nguyễn Minh Chiến', chuyenMon: 'Lập trình Web' },
+  { id: 'gv-2', ten: 'Trần Đình Trọng', chuyenMon: 'Data Science' },
+  { id: 'gv-3', ten: 'Lê Tiến Đạt', chuyenMon: 'Mobile App' },
+  { id: 'gv-4', ten: 'Đào Huy Hiệu', chuyenMon: 'UI/UX Design' },
+  { id: 'gv-5', ten: 'Nguyễn Khánh Toàn', chuyenMon: 'DevOps & Cloud' },
+  { id: 'gv-6', ten: 'Ngô Việt Anh', chuyenMon: 'AI & Machine Learning' },
 ];
 
 export const seedKhoaHoc: KhoaHoc[] = [

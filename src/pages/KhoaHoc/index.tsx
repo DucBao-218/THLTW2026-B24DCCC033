@@ -62,7 +62,7 @@ const QuanLyKhoaHocPage: React.FC = () => {
       message.success('Cập nhật khóa học thành công!');
     } else {
       const newItem: KhoaHoc = {
-        id: generateId(),
+        id: generateId('KH', khoaHocs.map((k) => k.id)),
         ...values,
         createdAt: dayjs().format('YYYY-MM-DD'),
       };

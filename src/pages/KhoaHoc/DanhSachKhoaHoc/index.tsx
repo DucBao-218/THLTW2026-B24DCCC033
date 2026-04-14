@@ -336,10 +336,10 @@ const DanhSachKhoaHoc: React.FC<Props> = ({ onAdd, onEdit, onDelete, refreshKey 
           rowKey="id"
           scroll={{ x: 900 }}
           pagination={{
-            pageSize: 8,
-            showTotal: (total) => `Tổng ${total} khóa học`,
+            defaultPageSize: 10,
             showSizeChanger: true,
-            pageSizeOptions: ['5', '8', '15', '30'],
+            showTotal: (total) => `Tổng ${total} khóa học`,
+            pageSizeOptions: ['5', '10', '15', '20'],
           }}
           size="middle"
           rowClassName={(record) =>
