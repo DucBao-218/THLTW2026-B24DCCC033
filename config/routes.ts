@@ -46,17 +46,17 @@ export default [
     },
 
     {
-		path: '/product',
-		name: 'Sản phẩm và đơn hàng',
-		icon: 'AppstoreOutlined',
-		component: './Product',
-	},
-	{
-		path: '/statistics',
-		name: 'Thống kê',
-		icon: 'BarChartOutlined',
-		component: './Dashboard',
-	},
+        path: '/product',
+        name: 'Sản phẩm và đơn hàng',
+        icon: 'AppstoreOutlined',
+        component: './Product',
+    },
+    {
+        path: '/statistics',
+        name: 'Thống kê',
+        icon: 'BarChartOutlined',
+        component: './Dashboard',
+    },
     {
         path: '/game',
         name: 'Trò chơi',
@@ -88,24 +88,24 @@ export default [
         component: './DichVu/_layout',
         routes: [
             {
-            path: '/dich-vu/nhan-vien',
-            name: 'Nhân viên',
-            component: './DichVu/NhanVien',
+                path: '/dich-vu/nhan-vien',
+                name: 'Nhân viên',
+                component: './DichVu/NhanVien',
             },
             {
-            path: '/dich-vu/dich-vu',
-            name: 'Dịch vụ',
-            component: './DichVu/DichVu',
+                path: '/dich-vu/dich-vu',
+                name: 'Dịch vụ',
+                component: './DichVu/DichVu',
             },
             {
-            path: '/dich-vu/lich-hen',
-            name: 'Lịch hẹn',
-            component: './DichVu/LichHen',
+                path: '/dich-vu/lich-hen',
+                name: 'Lịch hẹn',
+                component: './DichVu/LichHen',
             },
             {
-            path: '/dich-vu/thong-ke',
-            name: 'Thống kê',
-            component: './DichVu/ThongKe',
+                path: '/dich-vu/thong-ke',
+                name: 'Thống kê',
+                component: './DichVu/ThongKe',
             },
         ],
     },
@@ -154,24 +154,24 @@ export default [
         component: './CauLacBo/_layout',
         routes: [
             {
-            path: '/cau-lac-bo/danh-sach',
-            name: 'Danh sách CLB',
-            component: './CauLacBo/DanhSachCLB',
+                path: '/cau-lac-bo/danh-sach',
+                name: 'Danh sách CLB',
+                component: './CauLacBo/DanhSachCLB',
             },
             {
-            path: '/cau-lac-bo/don-dang-ky',
-            name: 'Đơn đăng ký',
-            component: './CauLacBo/DonDangKy',
+                path: '/cau-lac-bo/don-dang-ky',
+                name: 'Đơn đăng ký',
+                component: './CauLacBo/DonDangKy',
             },
             {
-            path: '/cau-lac-bo/thanh-vien',
-            name: 'Thành viên CLB',
-            component: './CauLacBo/ThanhVien',
+                path: '/cau-lac-bo/thanh-vien',
+                name: 'Thành viên CLB',
+                component: './CauLacBo/ThanhVien',
             },
             {
-            path: '/cau-lac-bo/bao-cao',
-            name: 'Báo cáo thống kê',
-            component: './CauLacBo/BaoCaoThongKe',
+                path: '/cau-lac-bo/bao-cao',
+                name: 'Báo cáo thống kê',
+                component: './CauLacBo/BaoCaoThongKe',
             },
         ],
     },
@@ -182,36 +182,36 @@ export default [
         component: './DuLich/_layout',
         routes: [
             {
-            path: '/du-lich/kham-pha',
-            name: 'Khám phá điểm đến',
-            component: './DuLich/KhamPha',
+                path: '/du-lich/kham-pha',
+                name: 'Khám phá điểm đến',
+                component: './DuLich/KhamPha',
             },
             {
-            path: '/du-lich/lich-trinh',
-            name: 'Lịch trình du lịch',
-            component: './DuLich/LichTrinh',
+                path: '/du-lich/lich-trinh',
+                name: 'Lịch trình du lịch',
+                component: './DuLich/LichTrinh',
             },
             {
-            path: '/du-lich/ngan-sach',
-            name: 'Quản lý ngân sách',
-            component: './DuLich/NganSach',
+                path: '/du-lich/ngan-sach',
+                name: 'Quản lý ngân sách',
+                component: './DuLich/NganSach',
             },
             {
-            path: '/du-lich/admin',
-            name: 'Quản trị',
-            icon: 'SettingOutlined',
-            routes: [
-                {
-                path: '/du-lich/admin/diem-den',
-                name: 'Quản lý điểm đến',
-                component: './DuLich/Admin/QuanLyDiemDen',
-                },
-                {
-                path: '/du-lich/admin/thong-ke',
-                name: 'Thống kê báo cáo',
-                component: './DuLich/Admin/ThongKe',
-                },
-            ],
+                path: '/du-lich/admin',
+                name: 'Quản trị',
+                icon: 'SettingOutlined',
+                routes: [
+                    {
+                        path: '/du-lich/admin/diem-den',
+                        name: 'Quản lý điểm đến',
+                        component: './DuLich/Admin/QuanLyDiemDen',
+                    },
+                    {
+                        path: '/du-lich/admin/thong-ke',
+                        name: 'Thống kê báo cáo',
+                        component: './DuLich/Admin/ThongKe',
+                    },
+                ],
             },
         ],
     },
@@ -220,6 +220,39 @@ export default [
         name: 'Quản lý khóa học',
         icon: 'ReadOutlined',
         component: './KhoaHoc/index',
+    },
+    {
+        path: '/blog',
+        name: 'Blog',
+        icon: 'EditOutlined',
+        component: './Blog/_layout',
+        routes: [
+            {
+                path: '/blog/trang-chu',
+                name: 'Trang chủ Blog',
+                component: './Blog/TrangChu',
+            },
+            {
+                path: '/blog/bai-viet/:slug',
+                component: './Blog/ChiTietBaiViet',
+                hideInMenu: true,
+            },
+            {
+                path: '/blog/gioi-thieu',
+                name: 'Giới thiệu',
+                component: './Blog/GioiThieu',
+            },
+            {
+                path: '/blog/quan-ly-bai-viet',
+                name: 'Quản lý bài viết',
+                component: './Blog/QuanLyBaiViet',
+            },
+            {
+                path: '/blog/quan-ly-tag',
+                name: 'Quản lý thẻ',
+                component: './Blog/QuanLyTag',
+            },
+        ],
     },
 
     // DANH MUC HE THONG
