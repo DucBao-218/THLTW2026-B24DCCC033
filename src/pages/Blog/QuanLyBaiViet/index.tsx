@@ -104,7 +104,7 @@ const QuanLyBaiViet: React.FC = () => {
                     slug: vals.slug || toSlug(vals.tieuDe),
                     tomTat: vals.tomTat || '',
                     noiDung: vals.noiDung || '',
-                    anhDaiDien: vals.anhDaiDien || 'https://hinhnenpowerpoint.app/wp-content/uploads/2025/07/avatar-con-gian-cute-1-1.jpg',
+                    anhDaiDien: vals.anhDaiDien || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&q=80',
                     tacGia: vals.tacGia || 'Lâm Đức Bảo',
                     tagIds: vals.tagIds || [],
                     trangThai: vals.trangThai,

@@ -17,8 +17,8 @@ const { Title, Text, Paragraph } = Typography;
 const { useBreakpoint } = Grid;
 
 const SKILL_LEVELS: Record<string, number> = {
-    ReactJS: 92, TypeScript: 88, NodeJS: 80, 'Ant Design': 85,
-    UMI: 78, 'CSS/SCSS': 82, Git: 90, Docker: 65,
+    Python: 95, 'Apache Spark': 88, 'SQL/PostgreSQL': 92, 'Apache Kafka': 80,
+    Airflow: 85, dbt: 78, BigQuery: 82, 'Docker & Kubernetes': 75, 'Power BI': 72, Git: 90,
 };
 
 const GioiThieu: React.FC = () => {
@@ -71,7 +71,7 @@ const GioiThieu: React.FC = () => {
 
                     <div style={{ marginTop: 16 }}>
                         <Title level={screens.xs ? 3 : 2} style={{ margin: 0 }}>{tacGia.ten}</Title>
-                        <Text type="secondary" style={{ fontSize: 14 }}>Frontend Developer · Blogger</Text>
+                        <Text type="secondary" style={{ fontSize: 14 }}>Data Engineer · Technical Blogger</Text>
                     </div>
 
                     <Paragraph
@@ -85,15 +85,15 @@ const GioiThieu: React.FC = () => {
                             const url = tacGia.mxh[item.key as keyof TacGia['mxh']];
                             if (!url) return null;
                             return (
-                                <a key={item.key} href={url} target="_blank" rel="noopener noreferrer">
-                                    <Tag
-                                        icon={item.icon}
-                                        color={item.color}
-                                        style={{ cursor: 'pointer', borderRadius: 20, padding: '4px 14px', fontSize: 13 }}
-                                    >
-                                        {item.label}
-                                    </Tag>
-                                </a>
+                                <Tag
+                                    key={item.key}
+                                    icon={item.icon}
+                                    color={item.color}
+                                    style={{ cursor: 'pointer', borderRadius: 20, padding: '4px 14px', fontSize: 13 }}
+                                    onClick={() => window.open(url, '_blank')}
+                                >
+                                    {item.label}
+                                </Tag>
                             );
                         })}
                     </Space>
@@ -169,8 +169,8 @@ const GioiThieu: React.FC = () => {
             <Card style={{ marginTop: 16, borderRadius: 12 }}>
                 <Title level={5} style={{ marginBottom: 16 }}>Chủ đề yêu thích</Title>
                 <Space wrap>
-                    {['Frontend Development', 'ReactJS Ecosystem', 'TypeScript', 'UI/UX Design',
-                        'Performance Optimization', 'Developer Tools', 'Best Practices', 'Open Source'].map((t) => (
+                    {['ETL Pipeline', 'Apache Spark', 'Data Warehouse', 'Stream Processing',
+                        'SQL & Analytics', 'Data Quality', 'MLOps', 'Open Source'].map((t) => (
                             <Tag key={t} style={{ padding: '4px 14px', borderRadius: 20, fontSize: 13 }} color="blue">
                                 {t}
                             </Tag>
