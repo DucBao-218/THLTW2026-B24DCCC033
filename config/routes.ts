@@ -1,4 +1,4 @@
-﻿import path from "path";
+import path from "path";
 
 export default [
     {
@@ -251,6 +251,39 @@ export default [
                 path: '/blog/quan-ly-tag',
                 name: 'Quản lý thẻ',
                 component: './Blog/QuanLyTag',
+            },
+        ],
+    },
+    {
+        path: '/the-thao',
+        name: 'Thể dục & Sức khỏe',
+        icon: 'HeartOutlined',
+        component: './TheThao/_layout',
+        routes: [
+            {
+                path: '/the-thao/dashboard',
+                name: 'Trang chủ ',
+                component: './TheThao/Dashboard',
+            },
+            {
+                path: '/the-thao/nhat-ky-tap-luyen',
+                name: 'Nhật ký tập luyện',
+                component: './TheThao/NhatKyTapLuyen',
+            },
+            {
+                path: '/the-thao/nhat-ky-chi-so',
+                name: 'Nhật ký chỉ số',
+                component: './TheThao/NhatKyChiSo',
+            },
+            {
+                path: '/the-thao/muc-tieu',
+                name: 'Mục tiêu',
+                component: './TheThao/MucTieu',
+            },
+            {
+                path: '/the-thao/thu-vien-bai-tap',
+                name: 'Thư viện bài tập',
+                component: './TheThao/ThuVienBaiTap',
             },
         ],
     },
