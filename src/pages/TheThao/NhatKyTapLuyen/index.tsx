@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, Select, DatePicker, InputNumber, Tag, Space, Popconfirm, Typography, Row, Col, Card } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, FileTextOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
 import { BuoiTap, LoaiBaiTap, STORAGE_KEYS, getFromStorage, saveToStorage, seedBuoiTap, generateId, normalizeStr, LOAI_BAI_TAP_OPTIONS, LOAI_BAI_TAP_COLOR } from '../types';
@@ -62,10 +62,15 @@ const NhatKyTapLuyen: React.FC = () => {
         { title: 'Calo', dataIndex: 'caloDot', key: 'caloDot', width: 90, align: 'center', render: v => <Text style={{ color: '#f5576c', fontWeight: 600 }}>{v}</Text> },
         { title: 'Ghi chú', dataIndex: 'ghiChu', key: 'ghiChu', ellipsis: true, render: v => <Text type="secondary" style={{ fontSize: 12 }}>{v || '—'}</Text> },
         {
-            title: 'Trạng thái', dataIndex: 'trangThai', key: 'trangThai', width: 130,
-            render: v => <Tag color={v === 'hoan-thanh' ? 'success' : 'error'} style={{ borderRadius: 8 }}>
-                {v === 'hoan-thanh' ? '✅ Hoàn thành' : '❌ Bỏ lỡ'}
-            </Tag>
+            title: 'Trạng thái', dataIndex: 'trangThai', key: 'trangThai', width: 145,
+            render: v => (
+                <Tag
+                    color={v === 'hoan-thanh' ? 'success' : 'error'}
+                    icon={v === 'hoan-thanh' ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
+                    style={{ borderRadius: 8 }}>
+                    {v === 'hoan-thanh' ? 'Hoàn thành' : 'Bỏ lỡ'}
+                </Tag>
+            )
         },
         {
             title: 'Thao tác', key: 'action', width: 100, align: 'center',
@@ -84,7 +89,9 @@ const NhatKyTapLuyen: React.FC = () => {
         <div style={{ padding: 24, background: '#f0f2f5', minHeight: '100vh' }}>
             <Card bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                    <Title level={3} style={{ margin: 0 }}>🏋️ Nhật ký tập luyện</Title>
+                    <Title level={3} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <FileTextOutlined style={{ color: '#667eea' }} /> Nhật ký tập luyện
+                    </Title>
                     <Button type="primary" icon={<PlusOutlined />} onClick={openAdd} style={{ background: 'linear-gradient(135deg,#667eea,#764ba2)', border: 'none', borderRadius: 8 }}>
                         Thêm buổi tập
                     </Button>
@@ -110,8 +117,16 @@ const NhatKyTapLuyen: React.FC = () => {
                     style={{ borderRadius: 8 }} rowClassName={(_, i) => i % 2 === 0 ? '' : 'ant-table-row-alt'} />
             </Card>
 
-            <Modal title={editing ? '✏️ Sửa buổi tập' : '➕ Thêm buổi tập mới'} open={modalOpen} onOk={handleOk} onCancel={() => setModalOpen(false)}
-                okText={editing ? 'Cập nhật' : 'Thêm'} cancelText="Hủy" width={520} okButtonProps={{ style: { background: 'linear-gradient(135deg,#667eea,#764ba2)', border: 'none' } }}>
+            <Modal
+                title={
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {editing ? <EditOutlined style={{ color: '#667eea' }} /> : <PlusOutlined style={{ color: '#667eea' }} />}
+                        {editing ? 'Sửa buổi tập' : 'Thêm buổi tập mới'}
+                    </span>
+                }
+                open={modalOpen} onOk={handleOk} onCancel={() => setModalOpen(false)}
+                okText={editing ? 'Cập nhật' : 'Thêm'} cancelText="Hủy" width={520}
+                okButtonProps={{ style: { background: 'linear-gradient(135deg,#667eea,#764ba2)', border: 'none' } }}>
                 <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
                     <Row gutter={16}>
                         <Col span={12}>
@@ -147,8 +162,8 @@ const NhatKyTapLuyen: React.FC = () => {
                     </Form.Item>
                     <Form.Item name="trangThai" label="Trạng thái" rules={[{ required: true, message: 'Chọn trạng thái' }]}>
                         <Select placeholder="Chọn trạng thái" style={{ borderRadius: 8 }}>
-                            <Option value="hoan-thanh">✅ Hoàn thành</Option>
-                            <Option value="bo-lo">❌ Bỏ lỡ</Option>
+                            <Option value="hoan-thanh"><CheckCircleOutlined style={{ color: '#52c41a', marginRight: 6 }} />Hoàn thành</Option>
+                            <Option value="bo-lo"><CloseCircleOutlined style={{ color: '#ff4d4f', marginRight: 6 }} />Bỏ lỡ</Option>
                         </Select>
                     </Form.Item>
                 </Form>

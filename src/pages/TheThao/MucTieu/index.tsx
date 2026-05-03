@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Button, Drawer, Form, Input, Select, DatePicker, InputNumber, Tag, Space, Popconfirm, Typography, Progress, Badge, Radio, Tooltip } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, AimOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, AimOutlined, CalendarOutlined, WarningOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import {
     MucTieu, TrangThaiMucTieu, STORAGE_KEYS, getFromStorage, saveToStorage, seedMucTieu, generateId,
@@ -70,7 +70,9 @@ const MucTieuPage: React.FC = () => {
         <div style={{ padding: 24, background: '#f0f2f5', minHeight: '100vh' }}>
             <Card bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                    <Title level={3} style={{ margin: 0 }}>🎯 Quản lý mục tiêu</Title>
+                    <Title level={3} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <AimOutlined style={{ color: '#43e97b' }} /> Quản lý mục tiêu
+                    </Title>
                     <Button type="primary" icon={<PlusOutlined />} onClick={openAdd} style={{ background: 'linear-gradient(135deg,#43e97b,#38f9d7)', border: 'none', borderRadius: 8, color: '#065f46' }}>
                         Thêm mục tiêu
                     </Button>
@@ -126,8 +128,11 @@ const MucTieuPage: React.FC = () => {
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
-                                    <Text style={{ fontSize: 12 }} type={isExpired && mt.trangThai === 'dang-thuc-hien' ? 'danger' : 'secondary'}>
-                                        📅 {isExpired && mt.trangThai === 'dang-thuc-hien' ? '⚠️ ' : ''}{moment(mt.deadline).format('DD/MM/YYYY')}
+                                    <Text style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }} type={isExpired && mt.trangThai === 'dang-thuc-hien' ? 'danger' : 'secondary'}>
+                                        {isExpired && mt.trangThai === 'dang-thuc-hien'
+                                            ? <><WarningOutlined style={{ color: '#ff4d4f' }} /> {moment(mt.deadline).format('DD/MM/YYYY')}</>
+                                            : <><CalendarOutlined /> {moment(mt.deadline).format('DD/MM/YYYY')}</>
+                                        }
                                     </Text>
                                     {mt.trangThai === 'dang-thuc-hien' && (
                                         <div style={{ display: 'flex', gap: 4 }}>
@@ -149,7 +154,14 @@ const MucTieuPage: React.FC = () => {
                 })}
             </Row>
 
-            <Drawer title={editing ? '✏️ Sửa mục tiêu' : '➕ Thêm mục tiêu mới'} placement="right" width={420}
+            <Drawer
+                title={
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {editing ? <EditOutlined style={{ color: '#43e97b' }} /> : <PlusOutlined style={{ color: '#43e97b' }} />}
+                        {editing ? 'Sửa mục tiêu' : 'Thêm mục tiêu mới'}
+                    </span>
+                }
+                placement="right" width={420}
                 open={drawerOpen} onClose={() => setDrawerOpen(false)}
                 footer={
                     <div style={{ textAlign: 'right' }}>

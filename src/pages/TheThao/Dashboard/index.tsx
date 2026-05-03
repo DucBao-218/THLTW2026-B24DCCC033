@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tag, Typography, Timeline } from 'antd';
-import { FireOutlined, ThunderboltOutlined, TrophyOutlined, AimOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import {
+    FireOutlined, ThunderboltOutlined, TrophyOutlined, AimOutlined,
+    CheckCircleOutlined, CloseCircleOutlined, BarChartOutlined, LineChartOutlined,
+    HistoryOutlined, EditOutlined,
+} from '@ant-design/icons';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -92,7 +96,9 @@ const Dashboard: React.FC = () => {
 
             <Row gutter={[20, 20]} style={{ marginBottom: 28 }}>
                 <Col xs={24} lg={12}>
-                    <Card title={<span style={{ fontWeight: 700 }}>📊 Buổi tập theo tuần</span>} bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+                    <Card
+                        title={<span style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}><BarChartOutlined style={{ color: '#667eea' }} /> Buổi tập theo tuần</span>}
+                        bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
                         <ResponsiveContainer width="100%" height={240}>
                             <BarChart data={weekData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                                 <defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#667eea" /><stop offset="100%" stopColor="#764ba2" /></linearGradient></defs>
@@ -106,7 +112,9 @@ const Dashboard: React.FC = () => {
                     </Card>
                 </Col>
                 <Col xs={24} lg={12}>
-                    <Card title={<span style={{ fontWeight: 700 }}>⚖️ Thay đổi cân nặng</span>} bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+                    <Card
+                        title={<span style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}><LineChartOutlined style={{ color: '#f5576c' }} /> Thay đổi cân nặng</span>}
+                        bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
                         <ResponsiveContainer width="100%" height={240}>
                             <LineChart data={weightData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -120,7 +128,9 @@ const Dashboard: React.FC = () => {
                 </Col>
             </Row>
 
-            <Card title={<span style={{ fontWeight: 700 }}>🕐 5 Buổi tập gần nhất</span>} bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+            <Card
+                title={<span style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}><HistoryOutlined style={{ color: '#764ba2' }} /> 5 Buổi tập gần nhất</span>}
+                bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
                 {recent5.length === 0 ? <Text type="secondary">Chưa có buổi tập nào</Text> : (
                     <Timeline mode="left">
                         {recent5.map(bt => (
@@ -132,7 +142,11 @@ const Dashboard: React.FC = () => {
                                     <Tag color={LOAI_BAI_TAP_COLOR[bt.loaiBaiTap]} style={{ borderRadius: 8 }}>{bt.loaiBaiTap}</Tag>
                                     <Text type="secondary" style={{ fontSize: 12 }}>{bt.thoiLuong} phút · {bt.caloDot} kcal</Text>
                                 </div>
-                                {bt.ghiChu && <Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: 2 }}>📝 {bt.ghiChu}</Text>}
+                                {bt.ghiChu && (
+                                    <Text type="secondary" style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                                        <EditOutlined style={{ fontSize: 11 }} /> {bt.ghiChu}
+                                    </Text>
+                                )}
                             </Timeline.Item>
                         ))}
                     </Timeline>

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Button, Modal, Form, Input, Select, InputNumber, Tag, Space, Popconfirm, Typography, Divider } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, FireOutlined } from '@ant-design/icons';
+import {
+    PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, FireOutlined,
+    TeamOutlined, ReloadOutlined, StarOutlined, ThunderboltOutlined, AimOutlined,
+    BookOutlined, TrophyOutlined, OrderedListOutlined,
+} from '@ant-design/icons';
 import {
     BaiTap, NhomCo, MucDoKho, STORAGE_KEYS, getFromStorage, saveToStorage, seedBaiTap, generateId, normalizeStr, MUC_DO_COLOR
 } from '../types';
@@ -12,8 +16,14 @@ const NHOM_CO_OPTIONS: NhomCo[] = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms',
 const MUC_DO_OPTIONS: MucDoKho[] = ['De', 'Trung binh', 'Kho'];
 const MUC_DO_LABEL: Record<MucDoKho, string> = { De: 'Dễ', 'Trung binh': 'Trung bình', Kho: 'Khó' };
 
-const NHOM_CO_ICON: Record<NhomCo, string> = {
-    Chest: '💪', Back: '🔙', Legs: '🦵', Shoulders: '🏋️', Arms: '💪', Core: '🎯', 'Full Body': '🔥'
+const NHOM_CO_ICON: Record<NhomCo, React.ReactNode> = {
+    Chest: <ThunderboltOutlined style={{ color: '#667eea' }} />,
+    Back: <ReloadOutlined style={{ color: '#764ba2' }} />,
+    Legs: <AimOutlined style={{ color: '#f5576c' }} />,
+    Shoulders: <TrophyOutlined style={{ color: '#f093fb' }} />,
+    Arms: <StarOutlined style={{ color: '#4facfe' }} />,
+    Core: <AimOutlined style={{ color: '#43e97b' }} />,
+    'Full Body': <FireOutlined style={{ color: '#ff6b35' }} />,
 };
 
 const ThuVienBaiTap: React.FC = () => {
@@ -58,7 +68,9 @@ const ThuVienBaiTap: React.FC = () => {
         <div style={{ padding: 24, background: '#f0f2f5', minHeight: '100vh' }}>
             <Card bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
-                    <Title level={3} style={{ margin: 0 }}>📚 Thư viện bài tập</Title>
+                    <Title level={3} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <BookOutlined style={{ color: '#4facfe' }} /> Thư viện bài tập
+                    </Title>
                     <Button type="primary" icon={<PlusOutlined />} onClick={openAdd} style={{ background: 'linear-gradient(135deg,#4facfe,#00f2fe)', border: 'none', borderRadius: 8, color: '#1a365d' }}>
                         Thêm bài tập
                     </Button>
@@ -69,7 +81,11 @@ const ThuVienBaiTap: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={7}>
                         <Select placeholder="Nhóm cơ" allowClear style={{ width: '100%' }} value={filterNhom || undefined} onChange={v => setFilterNhom(v || '')}>
-                            {NHOM_CO_OPTIONS.map(n => <Option key={n} value={n}>{NHOM_CO_ICON[n]} {n}</Option>)}
+                            {NHOM_CO_OPTIONS.map(n => (
+                                <Option key={n} value={n}>
+                                    <Space size={6}>{NHOM_CO_ICON[n]} {n}</Space>
+                                </Option>
+                            ))}
                         </Select>
                     </Col>
                     <Col xs={24} sm={7}>
@@ -88,7 +104,7 @@ const ThuVienBaiTap: React.FC = () => {
                             bodyStyle={{ padding: 20 }} onClick={() => setDetailModal(bt)}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                                 <div>
-                                    <div style={{ fontSize: 20, marginBottom: 4 }}>{NHOM_CO_ICON[bt.nhomCo]}</div>
+                                    <div style={{ fontSize: 22, marginBottom: 4 }}>{NHOM_CO_ICON[bt.nhomCo]}</div>
                                     <Title level={5} style={{ margin: 0 }}>{bt.ten}</Title>
                                 </div>
                                 <Tag color={MUC_DO_COLOR[bt.mucDo]} style={{ borderRadius: 8, marginTop: 0, fontSize: 12 }}>{MUC_DO_LABEL[bt.mucDo]}</Tag>
@@ -119,7 +135,15 @@ const ThuVienBaiTap: React.FC = () => {
                 ))}
             </Row>
 
-            <Modal title={detailModal ? `📋 ${detailModal.ten}` : ''} open={!!detailModal} onCancel={() => setDetailModal(null)} footer={null} width={560}>
+            <Modal
+                title={
+                    detailModal ? (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <OrderedListOutlined style={{ color: '#4facfe' }} /> {detailModal.ten}
+                        </span>
+                    ) : ''
+                }
+                open={!!detailModal} onCancel={() => setDetailModal(null)} footer={null} width={560}>
                 {detailModal && (
                     <div>
                         <Space wrap style={{ marginBottom: 12 }}>
@@ -140,7 +164,14 @@ const ThuVienBaiTap: React.FC = () => {
                 )}
             </Modal>
 
-            <Modal title={editing ? '✏️ Sửa bài tập' : '➕ Thêm bài tập mới'} open={modalOpen} onOk={handleOk} onCancel={() => setModalOpen(false)}
+            <Modal
+                title={
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {editing ? <EditOutlined style={{ color: '#4facfe' }} /> : <PlusOutlined style={{ color: '#4facfe' }} />}
+                        {editing ? 'Sửa bài tập' : 'Thêm bài tập mới'}
+                    </span>
+                }
+                open={modalOpen} onOk={handleOk} onCancel={() => setModalOpen(false)}
                 okText={editing ? 'Cập nhật' : 'Thêm'} cancelText="Hủy" width={560}
                 okButtonProps={{ style: { background: 'linear-gradient(135deg,#4facfe,#00f2fe)', border: 'none', color: '#1a365d' } }}>
                 <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
@@ -151,7 +182,11 @@ const ThuVienBaiTap: React.FC = () => {
                         <Col span={12}>
                             <Form.Item name="nhomCo" label="Nhóm cơ" rules={[{ required: true, message: 'Chọn nhóm cơ' }]}>
                                 <Select placeholder="Chọn nhóm cơ" style={{ borderRadius: 8 }}>
-                                    {NHOM_CO_OPTIONS.map(n => <Option key={n} value={n}>{NHOM_CO_ICON[n]} {n}</Option>)}
+                                    {NHOM_CO_OPTIONS.map(n => (
+                                        <Option key={n} value={n}>
+                                            <Space size={6}>{NHOM_CO_ICON[n]} {n}</Space>
+                                        </Option>
+                                    ))}
                                 </Select>
                             </Form.Item>
                         </Col>

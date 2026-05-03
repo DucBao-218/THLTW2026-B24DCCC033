@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, DatePicker, InputNumber, Tag, Space, Popconfirm, Typography, Row, Col, Card } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, HeartOutlined, ClockCircleOutlined, DashboardOutlined, AreaChartOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import type { ColumnsType } from 'antd/es/table';
 import { ChiSoSucKhoe, STORAGE_KEYS, getFromStorage, saveToStorage, seedChiSo, generateId, tinhBMI, phanLoaiBMI } from '../types';
@@ -60,8 +60,22 @@ const NhatKyChiSo: React.FC = () => {
                 );
             },
         },
-        { title: 'Nhịp tim (bpm)', dataIndex: 'nhipTim', key: 'nhipTim', width: 130, align: 'center', render: v => <Text style={{ color: '#f5576c' }}>❤️ {v} bpm</Text> },
-        { title: 'Giờ ngủ', dataIndex: 'gioNgu', key: 'gioNgu', width: 110, align: 'center', render: v => <Text>😴 {v}h</Text> },
+        {
+            title: 'Nhịp tim (bpm)', dataIndex: 'nhipTim', key: 'nhipTim', width: 140, align: 'center',
+            render: v => (
+                <Text style={{ color: '#f5576c', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    <HeartOutlined style={{ color: '#f5576c' }} /> {v} bpm
+                </Text>
+            )
+        },
+        {
+            title: 'Giờ ngủ', dataIndex: 'gioNgu', key: 'gioNgu', width: 110, align: 'center',
+            render: v => (
+                <Text style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    <ClockCircleOutlined style={{ color: '#764ba2' }} /> {v}h
+                </Text>
+            )
+        },
         {
             title: 'Thao tác', key: 'action', width: 100, align: 'center',
             render: (_, r) => (
@@ -79,7 +93,9 @@ const NhatKyChiSo: React.FC = () => {
         <div style={{ padding: 24, background: '#f0f2f5', minHeight: '100vh' }}>
             <Card bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                    <Title level={3} style={{ margin: 0 }}>📊 Nhật ký chỉ số sức khỏe</Title>
+                    <Title level={3} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <AreaChartOutlined style={{ color: '#f093fb' }} /> Nhật ký chỉ số sức khỏe
+                    </Title>
                     <Button type="primary" icon={<PlusOutlined />} onClick={openAdd} style={{ background: 'linear-gradient(135deg,#f093fb,#f5576c)', border: 'none', borderRadius: 8 }}>
                         Thêm chỉ số
                     </Button>
@@ -87,7 +103,9 @@ const NhatKyChiSo: React.FC = () => {
             </Card>
 
             <Card bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: 20 }}>
-                <Text strong style={{ display: 'block', marginBottom: 10 }}>📋 Bảng phân loại BMI:</Text>
+                <Text strong style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                    <DashboardOutlined style={{ color: '#667eea' }} /> Bảng phân loại BMI:
+                </Text>
                 <Space wrap>
                     <Tag color="blue" style={{ borderRadius: 8, padding: '3px 10px' }}>Thiếu cân: BMI &lt; 18.5</Tag>
                     <Tag color="green" style={{ borderRadius: 8, padding: '3px 10px' }}>Bình thường: 18.5 – 24.9</Tag>
@@ -102,7 +120,14 @@ const NhatKyChiSo: React.FC = () => {
                     scroll={{ x: 700 }} />
             </Card>
 
-            <Modal title={editing ? '✏️ Sửa chỉ số sức khỏe' : '➕ Thêm chỉ số sức khỏe'} open={modalOpen} onOk={handleOk} onCancel={() => setModalOpen(false)}
+            <Modal
+                title={
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {editing ? <EditOutlined style={{ color: '#f5576c' }} /> : <PlusOutlined style={{ color: '#f5576c' }} />}
+                        {editing ? 'Sửa chỉ số sức khỏe' : 'Thêm chỉ số sức khỏe'}
+                    </span>
+                }
+                open={modalOpen} onOk={handleOk} onCancel={() => setModalOpen(false)}
                 okText={editing ? 'Cập nhật' : 'Thêm'} cancelText="Hủy" width={480}
                 okButtonProps={{ style: { background: 'linear-gradient(135deg,#f093fb,#f5576c)', border: 'none' } }}>
                 <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
