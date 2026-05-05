@@ -287,6 +287,29 @@ export default [
             },
         ],
     },
+    {
+        path: '/quan-ly-cong-viec',
+        name: 'Quản lý công việc',
+        icon: 'ProjectOutlined',
+        component: './QuanLyCongViec/_layout',
+        routes: [
+            {
+                path: '/quan-ly-cong-viec/dashboard',
+                name: 'Tổng quan',
+                component: './QuanLyCongViec/Dashboard',
+            },
+            {
+                path: '/quan-ly-cong-viec/kanban',
+                name: 'Kanban Board',
+                component: './QuanLyCongViec/KanbanBoard',
+            },
+            {
+                path: '/quan-ly-cong-viec/danh-sach',
+                name: 'Danh sách task',
+                component: './QuanLyCongViec/DanhSachTask',
+            },
+        ],
+    },
 
     // DANH MUC HE THONG
     // {
