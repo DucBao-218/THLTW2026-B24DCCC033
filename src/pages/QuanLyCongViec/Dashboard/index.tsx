@@ -14,6 +14,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import dayjs from 'dayjs';
 import {
     Task,
+    TrangThaiTask,
     STORAGE_KEY,
     getFromStorage,
     saveToStorage,
@@ -177,10 +178,10 @@ const Dashboard: React.FC = () => {
             dataIndex: 'trangThai',
             key: 'trangThai',
             width: 130,
-            render: (tt: string) => (
+            render: (tt: TrangThaiTask) => (
                 <Badge
-                    status={TRANG_THAI_COLOR[tt as keyof typeof TRANG_THAI_COLOR] as any}
-                    text={<Text style={{ fontSize: 12 }}>{TRANG_THAI_LABEL[tt as keyof typeof TRANG_THAI_LABEL]}</Text>}
+                    status={TRANG_THAI_COLOR[tt]}
+                    text={<Text style={{ fontSize: 12 }}>{TRANG_THAI_LABEL[tt]}</Text>}
                 />
             ),
         },

@@ -111,7 +111,7 @@ const DanhSachTask: React.FC = () => {
             title: '#',
             key: 'index',
             width: 50,
-            render: (_: any, __: Task, idx: number) => (
+            render: (_: unknown, __: Task, idx: number) => (
                 <Text type="secondary" style={{ fontSize: 12 }}>
                     {idx + 1}
                 </Text>
@@ -200,7 +200,7 @@ const DanhSachTask: React.FC = () => {
             width: 140,
             render: (tt: TrangThaiTask) => (
                 <Badge
-                    status={TRANG_THAI_COLOR[tt] as any}
+                    status={TRANG_THAI_COLOR[tt]}
                     text={
                         <Text style={{ fontSize: 13 }}>{TRANG_THAI_LABEL[tt]}</Text>
                     }
@@ -241,7 +241,7 @@ const DanhSachTask: React.FC = () => {
             key: 'action',
             width: 100,
             fixed: 'right',
-            render: (_: any, record: Task) => (
+            render: (_: unknown, record: Task) => (
                 <Space size={4}>
                     <Tooltip title="Chỉnh sửa">
                         <Button

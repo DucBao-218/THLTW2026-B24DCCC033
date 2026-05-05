@@ -24,7 +24,7 @@ import {
 } from '../types';
 import TaskForm from '../TaskForm';
 
-const { Text, Title } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
 interface KanbanCol {
     id: TrangThaiTask;
@@ -156,13 +156,13 @@ const TaskCard: React.FC<{
                         </div>
 
                         {task.moTa && (
-                            <Text
+                            <Paragraph
                                 type="secondary"
-                                style={{ fontSize: 12, display: 'block', marginBottom: 10, lineHeight: 1.5 }}
-                                ellipsis={{ rows: 2 } as any}
+                                style={{ fontSize: 12, marginBottom: 10, lineHeight: 1.5 }}
+                                ellipsis={{ rows: 2 }}
                             >
                                 {task.moTa}
-                            </Text>
+                            </Paragraph>
                         )}
 
                         {task.tags.length > 0 && (

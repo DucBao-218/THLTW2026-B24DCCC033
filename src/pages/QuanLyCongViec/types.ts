@@ -1,3 +1,5 @@
+import type { BadgeProps } from 'antd';
+
 export type TrangThaiTask = 'can-lam' | 'dang-lam' | 'hoan-thanh';
 export type UuTienTask = 'Cao' | 'Trung bình' | 'Thấp';
 
@@ -55,7 +57,7 @@ export const UU_TIEN_BG: Record<UuTienTask, string> = {
     Thấp: '#f6ffed',
 };
 
-export const TRANG_THAI_COLOR: Record<TrangThaiTask, string> = {
+export const TRANG_THAI_COLOR: Record<TrangThaiTask, BadgeProps['status']> = {
     'can-lam': 'default',
     'dang-lam': 'processing',
     'hoan-thanh': 'success',
